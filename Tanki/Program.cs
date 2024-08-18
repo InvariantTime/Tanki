@@ -1,13 +1,35 @@
+using Microsoft.EntityFrameworkCore;
+using Tanki.Persistence;
+using Tanki;
+
 var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+builder.Services.AddCors(opt =>
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    opt.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+builder.Services.AddControllers();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<ApplicationDbContext>(db =>
+{
+    db.UseSqlServer(connectionString);
+});
+
+builder.Services.RegisterRepositories();
+builder.Services.RegisterServices();
+
+var app = builder.Build();
+app.UseCors();
+
+app.MapControllers();
 
 app.Run();
