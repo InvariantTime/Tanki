@@ -1,4 +1,5 @@
 import {
+    Spinner,
     Table, TableContainer,
     Tbody,
     Text,
@@ -8,10 +9,20 @@ import React from "react";
 import { Room } from "../models/Room";
 
 interface Props {
-    rooms: Room[]
+    rooms: Room[],
+    loading: boolean
 }
 
-export const RoomList = ({ rooms }: Props) => {
+export const RoomList = ({ rooms, loading }: Props) => {
+
+    if (loading === true)
+    {
+        return (
+            <div className="text-center">
+                <Spinner className="text-blue-400"/>
+            </div>
+        );
+    }
 
     return (
         <div>

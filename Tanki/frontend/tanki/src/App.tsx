@@ -1,19 +1,19 @@
-import { Container } from '@chakra-ui/react';
 import './App.css';
 import { Lobby } from './components/Lobby';
+import { Connection } from './models/Connection';
+import { Header } from './components/Header';
 
 
 function App() {
 
+  var connection = new Connection();
+  //connection.Connect();
+
   return (
-    <>
-      <Container 
-        minH="100vh" minW="100vw" padding="0" 
-        className="bg-gradient-to-b from-gray-900 to-slate-900">
-       
-        <Lobby/>
-      </Container>
-    </>
+    <div className='app'>
+      <Header/>
+      <Lobby connection={connection}/>
+    </div>
   );
 }
 

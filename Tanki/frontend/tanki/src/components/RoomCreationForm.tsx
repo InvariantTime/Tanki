@@ -1,14 +1,15 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Input, Text } from "@chakra-ui/react";
 import { FocusableElement } from "@chakra-ui/utils";
-import { RefObject } from "react";
+import { RefObject, useRef } from "react";
 
 interface Props {
     onClose: () => void
     isOpen: boolean
-    cancelRef: RefObject<HTMLButtonElement | FocusableElement>
 }
 
-export const RoomCreationForm = ({ onClose, isOpen, cancelRef }: Props) => {
+export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
+
+    const cancelRef = useRef<HTMLButtonElement | FocusableElement>(null);
 
     return (
         <AlertDialog
@@ -21,31 +22,29 @@ export const RoomCreationForm = ({ onClose, isOpen, cancelRef }: Props) => {
 
             <AlertDialogOverlay />
 
-            <AlertDialogContent bg="transparent">
-                <div className="bg-gray-800 border border-gray-700 rounded shadow-lg shadow-blue-950">
-                    
-                    <AlertDialogHeader fontSize={18} color="green">
-                        <Text className="text-slate-200">
-                            New room
+            <AlertDialogContent bg="white">
+                <AlertDialogHeader fontSize={18} color="green">
+                    <Text>
+                        New room
+                    </Text>
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                    <div className="mb-4">
+                        <Text className="mb-3">
+                            input name of new room
                         </Text>
-                    </AlertDialogHeader>
 
-                    <AlertDialogBody>
-                        <div className="mb-4">
-                            <Text className="text-slate-400 mb-3">
-                                input name of new room
-                            </Text>
-
-                            <Input placeholder="name" />
-                        </div>
-                    </AlertDialogBody>
+                        <Input placeholder="name" />
+                    </div>
+                </AlertDialogBody>
 
 
-                    <AlertDialogFooter>
-                        <Button colorScheme="blue">Create</Button>
-                        <Button colorScheme="red" ml={3} onClick={onClose}>Cancel</Button>
-                    </AlertDialogFooter>
-                </div>
+                <AlertDialogFooter>
+                    <Button colorScheme="green">Create</Button>
+                    <Button colorScheme="red" ml={3} onClick={onClose}>Cancel</Button>
+                </AlertDialogFooter>
+
             </AlertDialogContent>
         </AlertDialog>
 
