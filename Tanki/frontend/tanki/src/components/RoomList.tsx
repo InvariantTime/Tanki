@@ -1,56 +1,47 @@
 import {
     Spinner,
     Table, TableContainer,
-    Tbody,
-    Text,
-    Tfoot, Th, Thead, Tr
+    Tbody, Th, Thead, Tr
 } from "@chakra-ui/react";
 import React from "react";
 import { Room } from "../models/Room";
 
 interface Props {
     rooms: Room[],
-    loading: boolean
 }
 
-export const RoomList = ({ rooms, loading }: Props) => {
+export const RoomList = ({ rooms }: Props) => {
 
-    if (loading === true)
+    const RenderBody = () =>
     {
         return (
-            <div className="text-center">
-                <Spinner className="text-blue-400"/>
-            </div>
+            rooms?.map((r, i) =>
+                <Tr>
+                    <Th>{i}</Th>
+                    <Th>{r.name}</Th>
+                    <Th>None</Th>
+                    <Th isNumeric>0/10</Th>
+                </Tr>
+            )
         );
     }
 
     return (
-        <div>
-            <TableContainer className="mb-10">
-                <Table variant="striped" colorScheme="teal">
-                    <Thead>
-                        <Tr>
-                            <Th><Text className="text-slate-200">i</Text></Th>
-                            <Th><Text className="text-slate-200">Name</Text></Th>
-                            <Th><Text className="text-slate-200">Admin</Text></Th>
-                            <Th isNumeric><Text className="text-slate-200">Players</Text></Th>
-                        </Tr>
-                    </Thead>
+        <TableContainer>
+            <Table variant="striped" colorScheme="teal">
+                <Thead>
+                    <Tr>
+                        <Th>i</Th>
+                        <Th>Name</Th>
+                        <Th>Host</Th>
+                        <Th isNumeric>Players</Th>
+                    </Tr>
+                </Thead>
 
-                    <Tbody>
-                        {
-                            rooms?.map((r, i) =>
-                                <Tr>
-                                    <Th><Text className="text-slate-400">{i + 1}</Text></Th>
-                                    <Th><Text className="text-slate-400">{r.name}</Text></Th>
-                                    <Th><Text className="text-slate-400">None</Text></Th>
-                                    <Th isNumeric><Text className="text-slate-400">0/10</Text></Th>
-                                </Tr>
-                            )
-                        }
-                    </Tbody>
-                </Table>
-            </TableContainer>
-        </div>
+                <Tbody>
+                    {RenderBody()}
+                </Tbody>
+            </Table>
+        </TableContainer>
     );
 }

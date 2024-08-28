@@ -1,20 +1,24 @@
-import { Center, Spinner, Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import { Table, TableContainer, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
 
 export const PlayerList = () =>
 {
     return (
-        <div className="bg-gray-800 rounded">
+        <div className="p-2">
+
+            <Text as="b">Players</Text>
+
             <TableContainer>
-                <Table variant="striped" colorScheme="steal">
+                <Table variant="striped">
                     <Thead>
                         <Tr>
                             <Th>Place</Th>
                             <Th>Name</Th>
-                            <Th>Score</Th>
+                            <Th isNumeric>Score</Th>
                         </Tr>
                     </Thead>
                     
                     <Tbody>
+                        
                     </Tbody>
                 </Table>
             </TableContainer>

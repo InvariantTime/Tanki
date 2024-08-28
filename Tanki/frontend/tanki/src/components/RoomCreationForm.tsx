@@ -1,4 +1,4 @@
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Input, Text } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, FormControl, FormLabel, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, SelectField, Text } from "@chakra-ui/react";
 import { FocusableElement } from "@chakra-ui/utils";
 import { RefObject, useRef } from "react";
 
@@ -30,13 +30,30 @@ export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
                 </AlertDialogHeader>
 
                 <AlertDialogBody>
-                    <div className="mb-4">
-                        <Text className="mb-3">
-                            input name of new room
-                        </Text>
+                    <FormControl>
 
-                        <Input placeholder="name" />
-                    </div>
+                        <div className="mb-5">
+                            <FormLabel>Name</FormLabel>
+                            <Input placeholder="name" />
+                        </div>
+
+                        <div className="mb-5">
+                            <FormLabel>Password (if needed)</FormLabel>
+                            <Input placeholder="password" type="password" />
+                        </div>
+
+                        <div className="mb-5">
+                            <FormLabel>number of players</FormLabel>
+                            <SelectField>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                            </SelectField>
+                        </div>
+                    </FormControl>
+
                 </AlertDialogBody>
 
 

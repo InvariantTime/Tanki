@@ -1,18 +1,34 @@
 import './App.css';
-import { Lobby } from './components/Lobby';
-import { Connection } from './models/Connection';
 import { Header } from './components/Header';
+import { IndexPage } from './pages/IndexPage';
+import { SessionPage } from './pages/SessionPage';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { RegisterForm } from './components/RegisterForm';
+import { PrivateRoute } from './components/PrivateRoute';
 
 
 function App() {
 
-  var connection = new Connection();
-  //connection.Connect();
-
   return (
-    <div className='app'>
-      <Header/>
-      <Lobby connection={connection}/>
+
+
+    <div className='bg-[url("../public/img/background.jpg")]
+      bg-no-repeat h-screen bg-cover'>
+
+      <div className='flex h-[8%]'>
+        <Header />
+      </div>
+
+      <div className='flex h-[90%]'>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<PrivateRoute><IndexPage/></PrivateRoute>}/>
+            <Route path='/session' element={<PrivateRoute><SessionPage/></PrivateRoute>}/>
+
+            <Route path='/register' element={<RegisterForm />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </div>
   );
 }

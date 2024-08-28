@@ -2,14 +2,13 @@ import { Center, Flex, Image, Text } from "@chakra-ui/react";
 
 export const Header = () => {
     return (
-        <div className="p-1 flex items-center justify-between 
-            bg-white border-b border-slate-300 shadow-lg">
-            
+        <div className="p-1 flex items-center justify-between w-full
+            bg-white border-b border-slate-300 shadow-lg flex-wrap">
             <HeaderLogo/>
             <nav>
                 <ul className="flex gap-5 text-gray-400 ">
-                    <li className="cursor-pointer">How to play</li>
-                    <li className="cursor-pointer">Leaders</li>
+                    <li className="cursor-pointer hover:text-blue-600">How to play</li>
+                    <li className="cursor-pointer hover:text-blue-600">Leaders</li>
                 </ul>
             </nav>
 

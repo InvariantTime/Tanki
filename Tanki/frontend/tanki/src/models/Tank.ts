@@ -4,5 +4,6 @@ export type Tank =
 {
     position: Point,
     rotation: number,
-    headRotation: number
+    headRotation: number,
+    owner: string
 };
