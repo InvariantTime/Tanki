@@ -1,6 +1,6 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, FormControl, FormLabel, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, SelectField, Text } from "@chakra-ui/react";
 import { FocusableElement } from "@chakra-ui/utils";
-import { RefObject, useRef } from "react";
+import { FormEventHandler, MouseEventHandler, RefObject, SyntheticEvent, useRef, useState } from "react";
 
 interface Props {
     onClose: () => void
@@ -11,14 +11,17 @@ export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
 
     const cancelRef = useRef<HTMLButtonElement | FocusableElement>(null);
 
+    function onSubmit(e: SyntheticEvent) {
+        e.preventDefault();
+    }
+
     return (
         <AlertDialog
             motionPreset="slideInBottom"
             onClose={onClose}
             isOpen={isOpen}
             leastDestructiveRef={cancelRef}
-            isCentered
-        >
+            isCentered>
 
             <AlertDialogOverlay />
 
@@ -29,20 +32,20 @@ export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
                     </Text>
                 </AlertDialogHeader>
 
-                <AlertDialogBody>
-                    <FormControl>
+                <form onSubmit={onSubmit}>
+                    <AlertDialogBody>
 
-                        <div className="mb-5">
+                        <FormControl mb="4">
                             <FormLabel>Name</FormLabel>
-                            <Input placeholder="name" />
-                        </div>
+                            <Input placeholder="name" required />
+                        </FormControl>
 
-                        <div className="mb-5">
+                        <FormControl mb="4">
                             <FormLabel>Password (if needed)</FormLabel>
                             <Input placeholder="password" type="password" />
-                        </div>
+                        </FormControl>
 
-                        <div className="mb-5">
+                        <FormControl mb="4">
                             <FormLabel>number of players</FormLabel>
                             <SelectField>
                                 <option>2</option>
@@ -51,19 +54,18 @@ export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
                                 <option>5</option>
                                 <option>6</option>
                             </SelectField>
-                        </div>
-                    </FormControl>
-
-                </AlertDialogBody>
+                        </FormControl>
+                    </AlertDialogBody>
 
 
-                <AlertDialogFooter>
-                    <Button colorScheme="green">Create</Button>
-                    <Button colorScheme="red" ml={3} onClick={onClose}>Cancel</Button>
-                </AlertDialogFooter>
+                    <AlertDialogFooter>
+                        <Button colorScheme="green" type="submit">Create</Button>
+                        <Button colorScheme="red" ml={3} onClick={onClose}>Cancel</Button>
+                    </AlertDialogFooter>
+                </form>
 
             </AlertDialogContent>
-        </AlertDialog>
+        </AlertDialog >
 
     );
 }

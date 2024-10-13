@@ -1,6 +1,14 @@
 import { Center, Flex, Image, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
 
-export const Header = () => {
+interface Props
+{
+    name: string,
+    score: number
+}
+
+export const Header = ({name, score}: Props) => {
+    
     return (
         <div className="p-1 flex items-center justify-between w-full
             bg-white border-b border-slate-300 shadow-lg flex-wrap">
@@ -12,8 +20,11 @@ export const Header = () => {
                 </ul>
             </nav>
 
-            <div>
-                Account Here
+            <div className="pr-4 flex flex-row gap-8">
+                Score: {score}
+                <div>
+                    {name}
+                </div>
             </div>
 
         </div>

@@ -1,34 +1,31 @@
 import './App.css';
-import { Header } from './components/Header';
 import { IndexPage } from './pages/IndexPage';
 import { SessionPage } from './pages/SessionPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { RegisterForm } from './components/RegisterForm';
 import { PrivateRoute } from './components/PrivateRoute';
+import { RegisterPage } from './pages/auth/RegisterPage';
+import { SignInPage } from './pages/auth/SignInPage';
 
 
 function App() {
 
   return (
-
-
     <div className='bg-[url("../public/img/background.jpg")]
       bg-no-repeat h-screen bg-cover'>
 
-      <div className='flex h-[8%]'>
-        <Header />
-      </div>
+      <BrowserRouter>
+        <Routes>
 
-      <div className='flex h-[90%]'>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={<PrivateRoute><IndexPage/></PrivateRoute>}/>
-            <Route path='/session' element={<PrivateRoute><SessionPage/></PrivateRoute>}/>
+          <Route element={<PrivateRoute />}>
+            <Route path='/' element={<IndexPage />} />
+            <Route path='/session' element={<SessionPage />} />
+          </Route>
 
-            <Route path='/register' element={<RegisterForm />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
+          <Route path='/register' element={<RegisterPage />}/>
+          <Route path='/signin' element={<SignInPage />}/>
+
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

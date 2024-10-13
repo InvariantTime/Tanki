@@ -8,6 +8,8 @@ namespace Tanki.Persistence
     {
         public DbSet<Room> Rooms { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         public ApplicationDbContext(DbContextOptions options) 
             : base(options)
         {
