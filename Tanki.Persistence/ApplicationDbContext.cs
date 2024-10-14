@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Tanki.Domain.Models;
+using Tanki.Persistence.Configs;
 
 namespace Tanki.Persistence
 {
@@ -18,8 +18,10 @@ namespace Tanki.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new UserModelBuilder());
+            modelBuilder.ApplyConfiguration(new RoomModelBuilder());
+
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

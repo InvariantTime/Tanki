@@ -17,6 +17,10 @@ namespace Tanki.Persistence.Configs
                 .IsRequired();
 
             builder.HasAlternateKey(x => x.Name);
+
+            builder.HasOne(x => x.Host)
+                .WithOne(x => x.Room)
+                .HasForeignKey<Room>(x => x.HostId);
         }
     }
 }

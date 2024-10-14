@@ -14,6 +14,10 @@ namespace Tanki.Persistence.Configs
 
             builder.HasAlternateKey(x => x.Name);
             builder.Property(x => x.Name).HasMaxLength(_nameMaxLength);
+
+            builder.HasOne(x => x.Room)
+                .WithOne(x => x.Host)
+                .HasForeignKey<User>(x => x.RoomId);
         }
     }
 }
