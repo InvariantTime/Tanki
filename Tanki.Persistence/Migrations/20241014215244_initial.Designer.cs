@@ -12,7 +12,7 @@ using Tanki.Persistence;
 namespace Tanki.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241014121435_initial")]
+    [Migration("20241014215244_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -29,9 +29,6 @@ namespace Tanki.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("HostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("MaxPlayerCount")
@@ -71,9 +68,6 @@ namespace Tanki.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoomId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
@@ -81,26 +75,7 @@ namespace Tanki.Persistence.Migrations
 
                     b.HasAlternateKey("Name");
 
-                    b.HasIndex("RoomId")
-                        .IsUnique();
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Tanki.Domain.Models.User", b =>
-                {
-                    b.HasOne("Tanki.Domain.Models.Room", "Room")
-                        .WithOne("Host")
-                        .HasForeignKey("Tanki.Domain.Models.User", "RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("Tanki.Domain.Models.Room", b =>
-                {
-                    b.Navigation("Host");
                 });
 #pragma warning restore 612, 618
         }

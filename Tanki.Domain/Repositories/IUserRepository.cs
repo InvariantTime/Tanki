@@ -13,7 +13,5 @@ namespace Tanki.Domain.Repositories
         Task AddUser(User user);
 
         Task RemoveUser(User user);
-
-        Task UpdateUser(User user);
     }
 }

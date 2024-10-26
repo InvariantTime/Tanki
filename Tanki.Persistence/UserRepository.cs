@@ -21,13 +21,18 @@ namespace Tanki.Persistence
 
         public async Task<bool> ContainsWithName(string name)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Name == name);
+
             return user != null;
         }
 
         public async Task<User?> GetUserByName(string name)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
+            var user = await _context.Users
+                .Include(x => x.Room)
+                .FirstOrDefaultAsync(x => x.Name == name);
+
             return user;
         }
 
@@ -37,15 +42,11 @@ namespace Tanki.Persistence
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUser(User user)
-        {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<User?> GetUser(Guid id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Users
+                .Include(x => x.Room)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

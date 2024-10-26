@@ -28,7 +28,7 @@ namespace Tanki.Controllers
 
             var user = result.Value!;
 
-            HttpContext.Session.SetString(_sessionIdKey, user.Id.ToString());
+            HttpContext.Session.Set(_sessionIdKey, user.Id.ToByteArray());
 
             return Ok();
         }

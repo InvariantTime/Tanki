@@ -16,8 +16,8 @@ builder.Services.AddCors(opt =>
     });
 });
 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
+builder.Services.RegisterAuthentication(builder.Configuration);
+builder.Services.RegisterAuthorization();
 
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
@@ -34,12 +34,11 @@ builder.Services.RegisterServices();
 
 var app = builder.Build();
 
-app.UseSession();
-
 app.UseCors();
+
+app.UseSession();
 
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");
-
 
 app.Run();

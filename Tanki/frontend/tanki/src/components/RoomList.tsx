@@ -1,26 +1,47 @@
 import {
-    Spinner,
     Table, TableContainer,
-    Tbody, Th, Thead, Tr
+    Tbody, Text, Th, Thead, Tr
 } from "@chakra-ui/react";
-import React from "react";
 import { Room } from "../models/Room";
+import { FaLock } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     rooms: Room[],
 }
 
+const RoomName = ({ name, isLocked }: { name: string, isLocked: boolean }) => {
+    return (
+        <Th>
+            <div className="flex">
+                <Text marginRight="2">{name}</Text>
+                {isLocked ? <FaLock /> : <></>}
+            </div>
+        </Th>
+    );
+}
+
 export const RoomList = ({ rooms }: Props) => {
 
-    const RenderBody = () =>
+    const navigate = useNavigate();
+
+    const onRoomClick = () =>
     {
+        navigate("session/sessionId=nan");
+    }
+
+    const RenderBody = () => {
         return (
             rooms?.map((r, i) =>
-                <Tr>
+                <Tr className="hover:bg-blue-100" onClick={onRoomClick}>
                     <Th>{i}</Th>
-                    <Th>{r.name}</Th>
-                    <Th>None</Th>
-                    <Th isNumeric>0/10</Th>
+                    <RoomName name={r.name} isLocked={r.isLocked} />
+                    <Th>{r.hostName}</Th>
+                    <Th isNumeric>
+                        <Text color={r.playerCount >= r.maxPlayerCount ? "red" : "black"}>
+                        {r.playerCount + '/' + r.maxPlayerCount}
+                            </Text>
+                    </Th>
                 </Tr>
             )
         );

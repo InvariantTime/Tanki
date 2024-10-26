@@ -9,8 +9,11 @@ namespace Tanki.Domain.Repositories
         Task Add(Room room);
 
         Task<Room?> GetById(Guid id);
-        
-        //TODO: Add filter
+      
         IQueryable<Room> GetAll();
+
+        Task<int> GetCount();
+
+        Task<List<Room>> GetAllByPage(int page, int pageSize);
     }
 }

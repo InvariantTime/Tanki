@@ -18,7 +18,7 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path='/' element={<IndexPage />} />
-            <Route path='/session' element={<SessionPage />} />
+            <Route path='/session/:sessionId' element={<SessionPage />} />
           </Route>
 
           <Route path='/register' element={<RegisterPage />}/>

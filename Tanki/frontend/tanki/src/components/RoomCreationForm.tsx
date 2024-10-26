@@ -1,6 +1,9 @@
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, FormControl, FormLabel, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, SelectField, Text } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, FormControl, FormLabel, Input, SelectField, Text } from "@chakra-ui/react";
 import { FocusableElement } from "@chakra-ui/utils";
-import { FormEventHandler, MouseEventHandler, RefObject, SyntheticEvent, useRef, useState } from "react";
+import { SyntheticEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const url = "http://localhost:5074/api/room";
 
 interface Props {
     onClose: () => void
@@ -9,10 +12,55 @@ interface Props {
 
 export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
 
+    const navigate = useNavigate();
     const cancelRef = useRef<HTMLButtonElement | FocusableElement>(null);
+    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState("");
+    const [pass, setPass] = useState("");
+    const [playerCount, setPlayerCount] = useState(2);
 
-    function onSubmit(e: SyntheticEvent) {
+    const onSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
+
+        setLoading(true);
+
+        const data =
+        {
+            name: name,
+            password: pass,
+            playerCount: playerCount
+        };
+
+        const options: RequestInit =
+        {
+            method: "POST",
+            credentials: "include",
+            headers:
+            {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        };
+
+        try {
+            var result = await fetch(url, options);
+        }
+        catch {
+            alert("server internal error");
+            setLoading(false);
+            return;
+        }
+
+        if (result.ok) {
+            navigate("/session/sessionId=nan");
+        }
+        else if (result.status === 401)
+        {
+            navigate("/signin");
+        }
+        else {
+            setLoading(false);
+        }
     }
 
     return (
@@ -37,30 +85,39 @@ export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
 
                         <FormControl mb="4">
                             <FormLabel>Name</FormLabel>
-                            <Input placeholder="name" required />
+                            <Input placeholder="name" required onChange={x => setName(x.target.value)}/>
                         </FormControl>
 
                         <FormControl mb="4">
                             <FormLabel>Password (if needed)</FormLabel>
-                            <Input placeholder="password" type="password" />
+                            <Input placeholder="password" type="password" onChange={x => setPass(x.target.value)}/>
                         </FormControl>
 
                         <FormControl mb="4">
                             <FormLabel>number of players</FormLabel>
-                            <SelectField>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
+                            <SelectField onChange={x => setPlayerCount(+x.target.value)}>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                                <option value={5}>5</option>
+                                <option value={6}>6</option>
+                                <option value={7}>7</option>
+                                <option value={8}>8</option>
                             </SelectField>
                         </FormControl>
                     </AlertDialogBody>
 
-
                     <AlertDialogFooter>
-                        <Button colorScheme="green" type="submit">Create</Button>
-                        <Button colorScheme="red" ml={3} onClick={onClose}>Cancel</Button>
+                        <Button colorScheme="green" type="submit"
+                            loadingText="creating" isLoading={loading}>
+                            Create
+                        </Button>
+
+                        {
+                            loading === false ?
+                                <Button colorScheme="red" ml={3} onClick={onClose}>Cancel</Button>
+                                : <></>
+                        }
                     </AlertDialogFooter>
                 </form>
 

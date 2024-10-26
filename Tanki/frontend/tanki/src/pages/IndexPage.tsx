@@ -1,37 +1,41 @@
-import { Button, Heading, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Button, Heading, Icon, IconButton, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import { RoomList } from "../components/RoomList";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
 import { Room } from "../models/Room";
 import { RoomCreationForm } from "../components/RoomCreationForm";
+import { PaginationControl } from "../components/PaginationControll";
+import { FaPlus } from "react-icons/fa"
+import { RoomService } from "../services/RoomService";
 
 const hubUrl = "http://localhost:5074/ws/rooms";
-const roomUrl = "http://localhost:5074/api/room";
+
+const pageSize = 1;
 
 export const IndexPage = () => {
 
-    const [rooms, setRooms] = useState<Room[]>([]);
-    const [loading, setLoading] = useState(true);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const initRooms = async () => {
-        const options =
-        {
-            method: "GET"
+    const [rooms, setRooms] = useState<Room[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [roomCount, setRoomCount] = useState(0);
+
+    const initRooms = async () =>
+    {
+        var rooms = await RoomService.getRooms(page, pageSize);
+
+        if ( rooms != null) {
+            setRooms(rooms);
         }
-
-        var result = await fetch(roomUrl, options);
-
-        if (result.ok === false)
-            return;
-
-        var data = await result.json();
-        setRooms(data);
-        setLoading(false);
     }
-
-    const onRoomsChanged = () => {
+    
+    const onRoomsChanged = async () => {
         initRooms();
+        
+        var count = await RoomService.getRoomsCount();
+        setRoomCount(count);
+        setLoading(false);
     }
 
     const RenderTable = () => {
@@ -48,29 +52,48 @@ export const IndexPage = () => {
 
     useEffect(() => {
         initConnection(onRoomsChanged)
-            .then(initRooms);
+            .then(onRoomsChanged);
     }, []);
+
+    useEffect(() => {
+        initRooms();
+    }, [page]);
 
     return (
         <div className="w-full p-4">
             <div className="flex flex-col text-center
-                items-center gap-10 mt-20">
-                <Heading>
-                    Choose room
-                </Heading>
+                items-center mt-20">
 
-                <div className="bg-white w-full rounded 
-                border border-slate-300 shadow-xl max-w-screen-md">
-
-                    <RenderTable />
-  
-                    <div className="float-right m-4">
-                        <Button colorScheme="green" onClick={onOpen}>+</Button>
+                <div className="w-full max-w-screen-md">
+                    <div className="bg-green-500 pb-4 text-center justify-center
+                        rounded-t">
+                        <Heading color="white">
+                            Choose room
+                        </Heading>
                     </div>
 
-                    <RoomCreationForm isOpen={isOpen} onClose={onClose}/>
-                </div>
+                    <div className="bg-white rounded-b mb-4
+                        border-b border-l border-r border-slate-300 shadow-xl">
 
+                        <RenderTable />
+
+                        <div className="flex justify-end p-2">
+                            <IconButton colorScheme="green" onClick={onOpen}
+                                icon={<FaPlus />} isRound aria-label="Plus" fontSize="21px">
+                            </IconButton>
+                        </div>
+
+                        <RoomCreationForm isOpen={isOpen} onClose={onClose} />
+                    </div>
+
+                    <div className="flex justify-end">
+                        <div className="bg-white flex rounded border
+                         border-slate-300 shadow-xl">
+                            <PaginationControl totalCount={Math.ceil(roomCount / pageSize)} page={page} setPage={setPage}/>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
         </div>

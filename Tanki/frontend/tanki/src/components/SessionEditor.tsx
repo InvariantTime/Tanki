@@ -1,4 +1,5 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Text } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Text, Textarea } from "@chakra-ui/react";
+import { Editor } from "@monaco-editor/react";
 
 export const SessionEditor = () =>
 {
@@ -8,7 +9,7 @@ export const SessionEditor = () =>
                 <Text as="b">Editor</Text>
 
                 <div className="h-[80%]">
-
+                    
                 </div>
 
                 <div className="border-t p-2 border-slate-400">

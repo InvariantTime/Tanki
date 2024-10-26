@@ -1,4 +1,8 @@
 export type Room =
 {
-    name: String
+    name: string,
+    hostName: string,
+    isLocked: boolean,
+    playerCount: number,
+    maxPlayerCount: number
 };

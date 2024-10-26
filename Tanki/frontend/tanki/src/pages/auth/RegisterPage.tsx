@@ -1,6 +1,6 @@
-import { Button, FormControl, FormLabel, Heading, Input, Text, Link, FormErrorMessage } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Heading, Input, Text, Link } from "@chakra-ui/react";
 import { SyntheticEvent, useState } from "react";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const registerUrl = "http://localhost:5074/api/user/register";
 
@@ -15,7 +15,7 @@ export const RegisterPage = () => {
     const onSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        if (confirmPass != pass) {
+        if (confirmPass !== pass) {
             alert("confirm password is not equal password");
             return;
         }
