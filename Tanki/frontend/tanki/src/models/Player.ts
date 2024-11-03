@@ -1,4 +1,4 @@
-export type User =
+export type Player =
 {
     name: string,
     score: number

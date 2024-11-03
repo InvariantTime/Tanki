@@ -3,7 +3,7 @@ import { FocusableElement } from "@chakra-ui/utils";
 import { SyntheticEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const url = "http://localhost:5074/api/room";
+const url = "http://localhost:5074/api/session";
 
 interface Props {
     onClose: () => void
@@ -52,7 +52,8 @@ export const RoomCreationForm = ({ onClose, isOpen }: Props) => {
         }
 
         if (result.ok) {
-            navigate("/session/sessionId=nan");
+            const id = await result.json();
+            navigate(`/session/${id}`);
         }
         else if (result.status === 401)
         {

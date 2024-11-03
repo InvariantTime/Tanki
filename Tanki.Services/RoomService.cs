@@ -1,5 +1,6 @@
 ﻿using Tanki.Domain.Models;
 using Tanki.Domain.Repositories;
+using Tanki.Services.Hashers;
 
 namespace Tanki.Services
 {
@@ -14,21 +15,21 @@ namespace Tanki.Services
             _hasher = hasher;
         }
         
-        public async Task CreateRoom(RoomCreationInfo creation)
-        {
-            var password = creation.Password == string.Empty ? string.Empty 
-                : _hasher.CreateHash(creation.Password);
+        //public async Task CreateRoom(RoomCreationInfo creation)
+        //{
+        //    var password = creation.Password == string.Empty ? string.Empty 
+        //        : _hasher.CreateHash(creation.Password);
 
-            var room = new Room
-            {
-                MaxPlayerCount = creation.MaxPlayerCount,
-                Name = creation.Name,
-                PasswordHash = password,
-                HostId = creation.UserId
-            };
+        //    var room = new Room
+        //    {
+        //        MaxPlayerCount = creation.MaxPlayerCount,
+        //        Name = creation.Name,
+        //        PasswordHash = password,
+        //        HostId = creation.UserId
+        //    };
 
-            await _repository.Add(room);
-        }
+        //    await _repository.Add(room);
+        //}
 
         public async Task<List<Room>> GetAllByPage(int page, int pageSize)
         {

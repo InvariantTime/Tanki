@@ -40,5 +40,6 @@ app.UseSession();
 
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");
+app.MapHub<SessionHub>("/ws/gameSession");
 
 app.Run();

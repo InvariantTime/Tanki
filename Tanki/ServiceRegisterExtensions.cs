@@ -12,6 +12,9 @@ namespace Tanki
         {
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISessionService, SessionService>();
+            //services.AddScoped<IGame, Game>();
+
             services.AddScoped<IHashService, ShaHasher>();
 
             services.AddSingleton<RoomHubContext>();

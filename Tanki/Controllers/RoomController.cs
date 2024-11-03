@@ -10,8 +10,6 @@ namespace Tanki.Controllers
     [Route("api/[controller]")]
     public class RoomController : ControllerBase
     {
-        private const string _sessionIdKey = "UserId";
-
         private readonly IRoomService _service;
         private readonly RoomHubContext _hubContext;
 
@@ -19,28 +17,6 @@ namespace Tanki.Controllers
         {
             _service = service;
             _hubContext = hubContext;
-        }
-
-        [HttpPost()]
-        public async Task<IActionResult> CreateRoom(RoomCreateRequest request)
-        {
-            var userId = HttpContext.Session.Get(_sessionIdKey);
-
-            if (userId == null)
-                return Unauthorized();
-
-            var creation = new RoomCreationInfo
-            {
-                Name = request.Name,
-                UserId = new Guid(userId),
-                Password = request.Password,
-                MaxPlayerCount = request.PlayerCount
-            };
-
-            await _service.CreateRoom(creation);
-            await _hubContext.NotifyRoomsChangedAsync();
-
-            return Ok();
         }
 
         [HttpGet]

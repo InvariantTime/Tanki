@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tanki.Domain\Tanki.Domain.csproj" />
-    <ProjectReference Include="..\Tanki.Game\Tanki.Game.csproj" />
     <ProjectReference Include="..\Tanki.Infrastructure\Tanki.Infrastructure.csproj" />
     <ProjectReference Include="..\Tanki.Persistence\Tanki.Persistence.csproj" />
     <ProjectReference Include="..\Tanki.Services\Tanki.Services.csproj" />

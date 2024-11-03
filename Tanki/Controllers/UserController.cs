@@ -9,8 +9,6 @@ namespace Tanki.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private const string _sessionIdKey = "UserId";
-
         private readonly IUserService _service;
 
         public UserController(IUserService service)
@@ -28,7 +26,7 @@ namespace Tanki.Controllers
 
             var user = result.Value!;
 
-            HttpContext.Session.Set(_sessionIdKey, user.Id.ToByteArray());
+            HttpContext.Session.Set(SessionOptions.SessionUserId, user.Id.ToByteArray());
 
             return Ok();
         }
@@ -41,7 +39,7 @@ namespace Tanki.Controllers
             if (result.IsSuccess == false)
                 return BadRequest(result.Error);
 
-            HttpContext.Session.Set(_sessionIdKey, result.Value!.Id.ToByteArray());
+            HttpContext.Session.Set(SessionOptions.SessionUserId, result.Value!.Id.ToByteArray());
 
             return Ok();
         }
@@ -49,14 +47,14 @@ namespace Tanki.Controllers
         [HttpGet("verify")]
         public async Task<IActionResult> Verify()
         {
-            if (HttpContext.Session.Keys.Contains(_sessionIdKey) == false)
+            if (HttpContext.Session.Keys.Contains(SessionOptions.SessionUserId) == false)
                 return Unauthorized();
 
-            var id = HttpContext.Session.Get(_sessionIdKey);
+            var id = HttpContext.Session.Get(SessionOptions.SessionUserId);
 
             if (id == null)
             {
-                HttpContext.Session.Remove(_sessionIdKey);
+                HttpContext.Session.Remove(SessionOptions.SessionUserId);
                 return StatusCode(500);
             }
 
@@ -64,7 +62,7 @@ namespace Tanki.Controllers
 
             if (result.IsSuccess == false)
             {
-                HttpContext.Session.Remove(_sessionIdKey);
+                HttpContext.Session.Remove(SessionOptions.SessionUserId);
                 return Unauthorized();
             }
 

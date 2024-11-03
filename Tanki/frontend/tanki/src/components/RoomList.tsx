@@ -27,7 +27,7 @@ export const RoomList = ({ rooms }: Props) => {
 
     const onRoomClick = () =>
     {
-        navigate("session/sessionId=nan");
+        navigate("session/1");
     }
 
     const RenderBody = () => {
