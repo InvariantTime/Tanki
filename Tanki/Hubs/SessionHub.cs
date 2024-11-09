@@ -1,58 +1,90 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Tanki.Domain.Models;
 using Tanki.Responces;
-using Tanki.Services;
+using Tanki.Services.Interfaces;
 
 namespace Tanki.Hubs
 {
-    public interface ISessionClient
+    public interface ISessionHubClient
     {
         Task PlayersChanged(IEnumerable<UserScoreResponce> users);
+
+        Task ConnectionError();
+
+        Task SessionClosed();
     }
 
-    public class SessionHub : Hub<ISessionClient>
+    public class SessionHub : Hub<ISessionHubClient>
     {
-        private const string _sessionQuery = "sessionId";
+        private const string _querySession = "sessionId";
 
         private readonly ISessionService _sessions;
-        private readonly IUserService _users;
 
-        public SessionHub(ISessionService sessions, IUserService users)
+        public SessionHub(ISessionService sessions)
         {
             _sessions = sessions;
-            _users = users;
         }
 
-        public async Task Join()
+        public override async Task OnConnectedAsync()
         {
-            var sessionId = Context.GetHttpContext()!.Request.Query[_sessionQuery];
+            var sessionId = Context.GetHttpContext()!.Request.Query[_querySession];
+
+            if (Guid.TryParse(sessionId, out var id) == false || id == Guid.Empty)
+            {
+                await Clients.Caller.ConnectionError();
+                return;
+            }
+
+            var userId = Context.GetHttpContext()!.Session.Get(SessionOptions.SessionUserId);
+
+            if (userId == null)
+            {
+                await Clients.Caller.ConnectionError();
+                return;
+            }
+
+            var result = await _sessions.Join(id, new Guid(userId));
+
+            if (result.IsSuccess == false)
+                return;
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, sessionId!);
+            await OnChangedPlayers(sessionId!, result.Value!);
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            var sessionId = Context.GetHttpContext()!.Request.Query[_querySession];
+
+            if (Guid.TryParse(sessionId, out var id) == false || id == Guid.Empty)
+                return;
+
             var userId = Context.GetHttpContext()!.Session.Get(SessionOptions.SessionUserId);
 
             if (userId == null)
                 return;
 
-            var user = await _users.GetUser(new Guid(userId));
+            var result = await _sessions.Leave(id, new Guid(userId));
 
-            if (user.IsSuccess == false)
+            if (result == SessionLeaveStates.Failure)
                 return;
 
-            if (Guid.TryParse(sessionId, out var id) == true && id != Guid.Empty)
+            if (result == SessionLeaveStates.IsHost)
             {
-                var result = await _sessions.JoinToSession(user.Value!, id);
-                var session = _sessions.Get(id);
-
-                if (result.IsSuccess == true && session.IsSuccess == true)
-                {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, sessionId!);
-
-                    await Clients.All.PlayersChanged(session.Value!.Users
-                        .Select(x => new UserScoreResponce(x.Name, x.Score)));
-                }
+                await Clients.Group(sessionId!).SessionClosed();
+                return;
             }
+
+            var session = _sessions.Get(id);
+
+            if (session != null)
+                await OnChangedPlayers(sessionId!, session);
         }
 
-        public override Task OnDisconnectedAsync(Exception? exception)
+        private async Task OnChangedPlayers(string id, GameSession session)
         {
-            return base.OnDisconnectedAsync(exception);
+            await Clients.Group(id).PlayersChanged(session.Users
+                .Select(x => new UserScoreResponce(x.Name, x.Score)));
         }
     }
 }

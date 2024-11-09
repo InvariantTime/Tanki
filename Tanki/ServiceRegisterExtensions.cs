@@ -3,6 +3,7 @@ using Tanki.Hubs;
 using Tanki.Persistence;
 using Tanki.Services;
 using Tanki.Services.Hashers;
+using Tanki.Services.Interfaces;
 
 namespace Tanki
 {

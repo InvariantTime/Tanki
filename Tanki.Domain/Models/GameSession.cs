@@ -1,42 +1,49 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 
 namespace Tanki.Domain.Models
 {
     public class GameSession
     {
-        private readonly List<User> _users;
+        private readonly ConcurrentDictionary<Guid, User> _users;
         private readonly Room _room;
-
-        public Guid Id { get; }
+        private readonly Guid _id;
 
         public Room Room => _room;
 
-        public IReadOnlyCollection<User> Users { get; }
+        public Guid Id => _id;
 
-        public GameSession(Room room)
+        public bool HasHost => 
+            _users.FirstOrDefault(x => x.Key == Room.HostId).Value != null;
+
+        public IEnumerable<User> Users => _users.Values;
+
+        public GameSession(Room room, Guid id)
         {
             _room = room;
+            _id = id;
             _users = new();
-
-            Users = new ReadOnlyCollection<User>(_users);
-            Id = Guid.NewGuid();
         }
 
         public bool AddUser(User user)
         {
-            if (_users.FirstOrDefault(x => x.Id == user.Id) != null)
-                return false;
-
-            if (_users.Count >= _room.MaxPlayerCount)
-                return false;
-
-            _users.Add(user);
-            return true;
+            return _users.TryAdd(user.Id, user);
         }
 
-        public void RemoveUser(User user)
+        public bool RemoveUser(Guid user)
         {
-            
+            return _users.TryRemove(user, out _);
+        }
+
+        public bool IsHost(Guid user)
+        {
+            return _room.HostId == user;
+        }
+
+        public static GameSession Create(Room room)
+        {
+            var id = Guid.NewGuid();
+            return new GameSession(room, id);
         }
     }
 }

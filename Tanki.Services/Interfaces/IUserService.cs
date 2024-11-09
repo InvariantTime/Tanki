@@ -1,7 +1,7 @@
 ﻿using Tanki.Domain;
 using Tanki.Domain.Models;
 
-namespace Tanki.Services
+namespace Tanki.Services.Interfaces
 {
     public interface IUserService
     {

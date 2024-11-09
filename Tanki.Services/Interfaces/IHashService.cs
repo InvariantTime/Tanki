@@ -1,4 +1,4 @@
-﻿namespace Tanki.Services.Hashers
+﻿namespace Tanki.Services.Interfaces
 {
     public interface IHashService
     {

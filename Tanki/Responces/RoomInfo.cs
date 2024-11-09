@@ -11,5 +11,7 @@ namespace Tanki.Responces
         public uint MaxPlayerCount { get; init; }
         
         public string HostName { get; init; } = string.Empty;
+
+        public Guid Id { get; init; } = Guid.Empty;
     }
 }

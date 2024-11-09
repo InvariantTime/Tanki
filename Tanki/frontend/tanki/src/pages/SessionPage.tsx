@@ -4,16 +4,34 @@ import { PlayerList } from "../components/PlayerList";
 import { useEffect, useState } from "react";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { Player } from "../models/Player";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const SessionPage = () => {
 
     const [players, setPlayers] = useState<Player[]>([]);
+    const [connection, setConnection] = useState<signalR.HubConnection>();
     const { sessionId } = useParams<{sessionId:string}>();
+    const navigate = useNavigate();
 
     const onPlayerChanged = (players: Player[]) =>
     {
         setPlayers(players.sort((a, b) => a.score > b.score ? -1 : 1));
+    }
+
+    const onSessionClosed = (players: Player[]) =>
+    {
+        connection?.stop();
+
+        alert("Host close the session");
+        navigate("/");
+    }
+
+    const onConnectionError = () =>
+    {
+        connection?.stop();
+
+        alert("Unable to connect to session");
+        navigate("/");
     }
 
     const initConnection = async () => {
@@ -23,10 +41,13 @@ export const SessionPage = () => {
             .configureLogging(LogLevel.Information);
 
         const connection = builder.build();
+        
         connection.on("playersChanged", onPlayerChanged);
-
+        connection.on("sessionClosed", onSessionClosed);
+        connection.on("connectionError", onConnectionError);
+        
         await connection.start();
-        await connection.invoke("join");
+        setConnection(connection);
     }
 
 
@@ -36,7 +57,11 @@ export const SessionPage = () => {
             return;
 
         initConnection();
-    }, [sessionId]);
+
+        return () => {
+             connection?.stop();
+        }
+    }, []);
 
     return (
         <div className="p-3 w-full">

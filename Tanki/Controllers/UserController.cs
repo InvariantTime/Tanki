@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tanki.Requests;
 using Tanki.Responces;
-using Tanki.Services;
+using Tanki.Services.Interfaces;
 
 namespace Tanki.Controllers
 {

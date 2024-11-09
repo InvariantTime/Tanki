@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Tanki.Domain;
 using Tanki.Domain.Models;
 using Tanki.Domain.Repositories;
 
@@ -13,10 +14,12 @@ namespace Tanki.Persistence
             _db = db;
         }
 
-        public async Task Add(Room room)
+        public async Task<Result> Add(Room room)
         {
-            _db.Rooms.Attach(room);
+            var entry = _db.Rooms.Attach(room);
             await _db.SaveChangesAsync();
+
+            return Result.Success();
         }
 
         public IQueryable<Room> GetAll()

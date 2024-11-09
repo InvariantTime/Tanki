@@ -6,7 +6,7 @@ namespace Tanki.Domain.Repositories
     {
         Task Remove(Guid id);
 
-        Task Add(Room room);
+        Task<Result> Add(Room room);
 
         Task<Room?> GetById(Guid id);
       

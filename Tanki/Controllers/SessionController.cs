@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tanki.Requests;
 using Tanki.Services;
+using Tanki.Services.Interfaces;
 
 namespace Tanki.Controllers
 {
@@ -8,11 +9,11 @@ namespace Tanki.Controllers
     [Route("api/[controller]")]
     public class SessionController : ControllerBase
     {
-        private readonly ISessionService _service;
+        private readonly ISessionService _sessions;
 
-        public SessionController(ISessionService service)
+        public SessionController(ISessionService session)
         {
-            _service = service;
+            _sessions = session;
         }
 
         [HttpPost]
@@ -23,20 +24,24 @@ namespace Tanki.Controllers
             if (id == null)
                 return Unauthorized();
 
-            var info = new SessionCreationInfo
+            var result = await _sessions.CreateSession(new SessionCreationInfo()
             {
-                Name = request.Name,
                 MaxPlayerCount = request.PlayerCount,
+                Name = request.Name,
                 Password = request.Password,
                 UserId = new Guid(id)
-            };
-
-            var result =  await _service.CreateSession(info);
+            });
 
             if (result.IsSuccess == false)
                 return BadRequest(result.Error);
 
-            return Ok(result.Value);
+            return Ok(result.Value!);
+        }
+
+        [HttpPost("join")]
+        public Task<IActionResult> JoinSession()
+        {
+            return Task.FromResult((IActionResult)Ok());
         }
     }
 }

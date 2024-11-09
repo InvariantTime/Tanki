@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
+using Tanki.Services.Interfaces;
 
 namespace Tanki.Services.Hashers
 {

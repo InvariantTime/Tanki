@@ -2,7 +2,7 @@
 using Tanki.Hubs;
 using Tanki.Requests;
 using Tanki.Responces;
-using Tanki.Services;
+using Tanki.Services.Interfaces;
 
 namespace Tanki.Controllers
 {
@@ -45,7 +45,8 @@ namespace Tanki.Controllers
                     IsLocked = room.HasPassword,
                     MaxPlayerCount = room.MaxPlayerCount,
                     PlayerCount = room.PlayerCount,
-                    HostName = host
+                    HostName = host,
+                    Id = room.Id
                 };
             }
         }

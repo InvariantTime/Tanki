@@ -1,7 +1,7 @@
 ﻿using Tanki.Domain;
 using Tanki.Domain.Models;
 using Tanki.Domain.Repositories;
-using Tanki.Services.Hashers;
+using Tanki.Services.Interfaces;
 
 namespace Tanki.Services
 {

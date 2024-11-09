@@ -50,8 +50,7 @@ namespace Tanki.Persistence.Migrations
 
                     b.HasAlternateKey("Name");
 
-                    b.HasIndex("HostId")
-                        .IsUnique();
+                    b.HasIndex("HostId");
 
                     b.ToTable("Rooms");
                 });
@@ -84,8 +83,8 @@ namespace Tanki.Persistence.Migrations
             modelBuilder.Entity("Tanki.Domain.Models.Room", b =>
                 {
                     b.HasOne("Tanki.Domain.Models.User", "Host")
-                        .WithOne("Room")
-                        .HasForeignKey("Tanki.Domain.Models.Room", "HostId")
+                        .WithMany("Room")
+                        .HasForeignKey("HostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
