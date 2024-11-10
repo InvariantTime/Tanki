@@ -14,6 +14,8 @@ namespace Tanki.Services.Interfaces
         IEnumerable<GameSession> GetAll();
 
         GameSession? Get(Guid id);
+
+        Result<Guid> GetJoinPermission(Guid room, string password);
     }
 
     public enum SessionLeaveStates

@@ -1,7 +1,11 @@
+import { UUID } from "crypto";
 import { Room } from "../models/Room";
+import { STATUS_CODES } from "http";
+import { NavigateFunction } from "react-router-dom";
 
 const getRoomUrl = "http://localhost:5074/api/room?";
 const getCountUrl = "http://localhost:5074/api/room/count"
+const joinRoomUrl = "http://localhost:5074/api/session/join";
 
 export class RoomService
 {
@@ -46,5 +50,36 @@ export class RoomService
 
     public static createRoom() {
         
+    }
+
+    public static async join(id: UUID, password: string, navigate: NavigateFunction) {
+
+        const body = {
+            id: id,
+            password: password
+        };
+
+        const options: RequestInit = {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(body),
+            headers: {
+                "CONTENT-TYPE": "application/json"
+            }
+        };
+
+        const result = await fetch(joinRoomUrl, options);
+
+        if (result.ok) {
+            const session = await result.json();
+            navigate(`/session/${session}`);
+        }
+        else if (result.status === 401) {
+            navigate("/login");
+        }
+        else {
+            const error = await result.json();
+            alert(error);
+        }
     }
 }

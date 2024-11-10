@@ -11,20 +11,26 @@ namespace Tanki.Services.Interfaces
 
         private readonly IRoomService _rooms;
         private readonly IUserRepository _users;
+        private readonly IHashService _hasher;
 
-        public SessionService(IRoomService rooms, IUserRepository users)
+        public SessionService(IRoomService rooms, IUserRepository users, IHashService hasher)
         {
             _rooms = rooms;
             _users = users;
+            _hasher = hasher;
         }
 
         public async Task<Result<Guid>> CreateSession(SessionCreationInfo info)
         {
+            var password = info.Password == string.Empty ? string.Empty 
+                : _hasher.CreateHash(info.Password);
+
             var room = new Room
             {
                 HostId = info.UserId,
                 MaxPlayerCount = info.MaxPlayerCount,
                 Name = info.Name,
+                PasswordHash = password
             };
 
             var result = await _rooms.AddRoom(room);
@@ -92,6 +98,24 @@ namespace Tanki.Services.Interfaces
         {
             _sessions.TryGetValue(id, out var session);
             return session;
+        }
+
+        public Result<Guid> GetJoinPermission(Guid roomId, string password)
+        {
+            var session = _sessions.FirstOrDefault(x => x.Value.Room.Id == roomId).Value;
+
+            if (session == null)
+                return Result.Failure<Guid>("Invalid room id");
+
+            if (session.Users.Count >= session.Room.MaxPlayerCount)
+                return Result.Failure<Guid>("Room is full");
+
+            var passwordHash = session.Room.PasswordHash;
+
+            if (passwordHash != string.Empty && _hasher.Compare(passwordHash, password) == false)
+                return Result.Failure<Guid>("Incorrect password");
+
+            return Result.Success(session.Id);
         }
     }
 }

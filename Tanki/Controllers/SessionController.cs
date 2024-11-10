@@ -39,9 +39,22 @@ namespace Tanki.Controllers
         }
 
         [HttpPost("join")]
-        public Task<IActionResult> JoinSession()
+        public IActionResult JoinSession(JoinRoomRequest request)
         {
-            return Task.FromResult((IActionResult)Ok());
+            var userId = HttpContext.Session.Get(SessionOptions.SessionUserId);
+
+            if (userId == null)
+                return Unauthorized();
+
+            if (Guid.TryParse(request.Id, out var id) == false || id == Guid.Empty)
+                return BadRequest("Invalid room id");
+
+            var result = _sessions.GetJoinPermission(id, string.Empty);
+
+            if (result.IsSuccess == false)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
         }
     }
 }

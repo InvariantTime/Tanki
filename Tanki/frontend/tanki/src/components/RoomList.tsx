@@ -6,6 +6,7 @@ import { Room } from "../models/Room";
 import { FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { UUID } from "crypto";
+import { RoomService } from "../services/RoomService";
 
 interface Props {
     rooms: Room[],
@@ -26,15 +27,21 @@ export const RoomList = ({ rooms }: Props) => {
 
     const navigate = useNavigate();
 
-    const onRoomClick = (id: UUID) =>
+    const onRoomClick = async (room: Room) =>
     {
-        navigate(`session/${id}`);
+        var password = "";
+
+        if (room.isLocked) {
+            password = prompt("input password", "") ?? "";
+        }
+
+        await RoomService.join(room.id, password, navigate);
     }
 
     const RenderBody = () => {
         return (
             rooms?.map((r, i) =>
-                <Tr className="hover:bg-blue-100" onClick={() => onRoomClick(r.id) }>
+                <Tr className="hover:bg-blue-100" onClick={() => onRoomClick(r) }>
                     <Th>{i}</Th>
                     <RoomName name={r.name} isLocked={r.isLocked} />
                     <Th>{r.hostName}</Th>
