@@ -15,5 +15,7 @@ namespace Tanki.Domain.Repositories
         Task<int> GetCount();
 
         Task<List<Room>> GetAllByPage(int page, int pageSize);
+
+        Task SetPlayerCount(Guid room, uint value);
     }
 }

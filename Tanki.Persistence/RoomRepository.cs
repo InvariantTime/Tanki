@@ -63,5 +63,16 @@ namespace Tanki.Persistence
         {
             return await _db.Rooms.CountAsync();
         }
+
+        public async Task SetPlayerCount(Guid id, uint count)
+        {
+            var room = _db.Rooms.FirstOrDefault(x => x.Id == id);
+
+            if (room == null)
+                return;
+
+            room.PlayerCount = count;
+            await _db.SaveChangesAsync();
+        }
     }
 }

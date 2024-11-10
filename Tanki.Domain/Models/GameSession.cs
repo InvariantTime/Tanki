@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 
 namespace Tanki.Domain.Models
 {
@@ -16,7 +15,7 @@ namespace Tanki.Domain.Models
         public bool HasHost => 
             _users.FirstOrDefault(x => x.Key == Room.HostId).Value != null;
 
-        public IEnumerable<User> Users => _users.Values;
+        public ICollection<User> Users => _users.Values;
 
         public GameSession(Room room, Guid id)
         {

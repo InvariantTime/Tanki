@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tanki.Hubs;
-using Tanki.Requests;
 using Tanki.Responces;
 using Tanki.Services.Interfaces;
 
@@ -11,12 +9,10 @@ namespace Tanki.Controllers
     public class RoomController : ControllerBase
     {
         private readonly IRoomService _service;
-        private readonly RoomHubContext _hubContext;
 
-        public RoomController(IRoomService service, RoomHubContext hubContext)
+        public RoomController(IRoomService service)
         {
             _service = service;
-            _hubContext = hubContext;
         }
 
         [HttpGet]

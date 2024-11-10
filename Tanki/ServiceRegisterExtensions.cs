@@ -18,7 +18,7 @@ namespace Tanki
 
             services.AddScoped<IHashService, ShaHasher>();
 
-            services.AddSingleton<RoomHubContext>();
+            services.AddSingleton<IRoomChangedRouter, RoomHubContext>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

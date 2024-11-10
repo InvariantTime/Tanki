@@ -9,10 +9,10 @@ namespace Tanki.Services.Interfaces
     {
         private static readonly ConcurrentDictionary<Guid, GameSession> _sessions = new();
 
-        private readonly IRoomRepository _rooms;
+        private readonly IRoomService _rooms;
         private readonly IUserRepository _users;
 
-        public SessionService(IRoomRepository rooms, IUserRepository users)
+        public SessionService(IRoomService rooms, IUserRepository users)
         {
             _rooms = rooms;
             _users = users;
@@ -27,7 +27,7 @@ namespace Tanki.Services.Interfaces
                 Name = info.Name,
             };
 
-            var result = await _rooms.Add(room);
+            var result = await _rooms.AddRoom(room);
 
             if (result.IsSuccess == false)
                 return Result.Failure<Guid>(result.Error);
@@ -55,7 +55,7 @@ namespace Tanki.Services.Interfaces
             if (result == false)
                 return Result.Failure<GameSession>("Unable to connect");
 
-            //TODO: change player count of room
+            await _rooms.SetPlayerCount(session.Room.Id, (uint)session.Users.Count);
             return Result.Success(session);
         }
 
@@ -73,13 +73,13 @@ namespace Tanki.Services.Interfaces
 
             if (session.IsHost(userId) == true)
             {
-                await _rooms.Remove(session.Room.Id);
+                await _rooms.DeleteRoom(session.Room.Id);
                 _sessions.Remove(session.Id, out _);
 
                 return SessionLeaveStates.IsHost;
             }
 
-            //TODO: change player count of room
+            await _rooms.SetPlayerCount(session.Room.Id, (uint)session.Users.Count);
             return SessionLeaveStates.Success;
         }
 

@@ -22,5 +22,4 @@ namespace Tanki.Services.Interfaces
         Success,
         IsHost,
     }
-
 }
