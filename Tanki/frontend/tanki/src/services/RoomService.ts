@@ -75,7 +75,7 @@ export class RoomService
             navigate(`/session/${session}`);
         }
         else if (result.status === 401) {
-            navigate("/login");
+            navigate("/signin");
         }
         else {
             const error = await result.json();

@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { PrivateRoute } from './components/PrivateRoute';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { SignInPage } from './pages/auth/SignInPage';
+import { GameField } from './components/GameField';
 
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
     <div className='bg-[url("../public/img/background.jpg")]
       bg-no-repeat h-screen bg-cover'>
 
-      <BrowserRouter>
+      {/*<BrowserRouter>
         <Routes>
 
           <Route element={<PrivateRoute />}>
@@ -25,7 +26,9 @@ function App() {
           <Route path='/signin' element={<SignInPage />}/>
 
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter>*/}
+
+      <GameField/>
     </div>
   );
 }

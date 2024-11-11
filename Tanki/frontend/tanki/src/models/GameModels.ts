@@ -7,3 +7,8 @@ export type Tank =
     headRotation: number,
     owner: string
 };
+
+export type Bullet =
+{
+    position: Point
+};

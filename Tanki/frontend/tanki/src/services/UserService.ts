@@ -1,7 +1,7 @@
 
 const verifyUrl = "http://localhost:5074/api/user/verify";
 
-export const invalid: UserData = {isSuccess: false, name: "", score: 0};
+export const invalid: UserData = {isSuccess: true, name: "", score: 0};
 
 export class UserService
 {
@@ -9,9 +9,6 @@ export class UserService
 
     public static async verify(): Promise<UserData>
     {
-
-
-        
         const options: RequestInit =
         {
             method:"GET",
