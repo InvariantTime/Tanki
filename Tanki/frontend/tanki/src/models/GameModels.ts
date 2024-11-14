@@ -1,14 +1,24 @@
 import { Point } from "@chakra-ui/utils";
 
-export type Tank =
-{
+export type Transformable = {
     position: Point,
-    rotation: number,
+    rotation: number
+}
+
+export type Tank = Transformable &
+{
     headRotation: number,
-    owner: string
+    owner: string,
+    color: TankColors
 };
 
-export type Bullet =
+export type Bullet = Transformable &
 {
-    position: Point
 };
+
+export enum TankColors {
+    Red,
+    Green,
+    Yellow,
+    Blue
+}
