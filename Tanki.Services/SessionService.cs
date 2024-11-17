@@ -2,8 +2,9 @@
 using Tanki.Domain;
 using Tanki.Domain.Models;
 using Tanki.Domain.Repositories;
+using Tanki.Services.Interfaces;
 
-namespace Tanki.Services.Interfaces
+namespace Tanki.Services
 {
     public class SessionService : ISessionService
     {
@@ -22,7 +23,7 @@ namespace Tanki.Services.Interfaces
 
         public async Task<Result<Guid>> CreateSession(SessionCreationInfo info)
         {
-            var password = info.Password == string.Empty ? string.Empty 
+            var password = info.Password == string.Empty ? string.Empty
                 : _hasher.CreateHash(info.Password);
 
             var room = new Room

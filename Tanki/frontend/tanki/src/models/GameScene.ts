@@ -2,9 +2,14 @@ import { Bullet, Tank, TankColors, Transformable } from "./GameModels";
 
 export class GameScene
 {
-    private objects: Transformable[] = [];
+    private objects: Transformable[] = [
+        {color: TankColors.Blue, position:{x:100, y:100}, rotation:10, owner:"tank", headRotation:0} as Tank,
+        {position: {x: 100, y: 150}, rotation:0} as Bullet
+    ];
 
-    public run()
+    private obj: Transformable[] =[];
+
+    public update()
     {
     }
 
