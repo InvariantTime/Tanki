@@ -2,13 +2,15 @@
 
 namespace Tanki.Game.Objects
 {
-    public abstract class GameObject
+    public abstract class GameObject : IPositionProvider
     {
         public Vector2 Position { get; private set; }
 
-        public Vector2 Speed { get; private set; }
+        public Vector2 Speed { get; protected set; }
 
-        public float Rotation { get; private set; }
+        public float Rotation { get; protected set; }
+
+        public bool NeedDestroy { get; private set; }
 
         public void Update(float dt)
         {
@@ -23,6 +25,11 @@ namespace Tanki.Game.Objects
         public void SetPosition(Vector2 position)
         {
             Position = position;
+        }
+
+        public void Destroy()
+        {
+            NeedDestroy = true;
         }
     }
 }

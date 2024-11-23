@@ -7,8 +7,6 @@ namespace Tanki.Game.Objects
 
         public int Health { get; private set; }
 
-        public bool IsDead => Health <= 0;
-
         public Tank(ITankController controller)
         {
             _controller = controller;
@@ -21,6 +19,7 @@ namespace Tanki.Game.Objects
 
         protected override void OnCollide(GameObject other)
         {
+            
         }
 
         public void TakeDamage(int value)
@@ -29,6 +28,9 @@ namespace Tanki.Game.Objects
                 return;
 
             Health -= value;
+
+            if (Health <= 0)
+                Destroy();
         }
     }
 }
