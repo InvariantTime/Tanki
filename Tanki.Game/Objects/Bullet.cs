@@ -2,32 +2,43 @@
 
 namespace Tanki.Game.Objects
 {
-    public class Bullet : GameObject//TODO: Use object pool pattern
+    public class Bullet : GameObject
     {
-        private const int _damage = 15;
-        private const float _speed = 5;
+        public const float Radius = 5;
 
-        public Bullet(Vector2 direction)
+        private const float _speed = 0.5f;
+
+        public Tank Owner { get; }
+
+        private Bullet(Tank owner, Vector2 direction) : base(Radius)
         {
-            Speed = Vector2.Normalize(direction) * _speed;
+            Owner = owner;
+            SetVelocity(Vector2.Normalize(direction) * _speed);
         }
 
-        protected override void OnUpdate(float dt)
+        protected override void OnUpdate()
         {
         }
 
-        protected override void OnCollide(GameObject other)
+        public override void OnCollide(GameObject other)
         {
-            if (other is Tank tank)
-            {
-                tank.TakeDamage(_damage);
-            }
-            else if (other is Bullet)
-            {
-                other.Destroy();
-            }
+            if (other == Owner)
+                return;
 
             Destroy();
+        }
+
+        public override void OnCollide(World world)
+        {
+            Destroy();
+        }
+
+        public static Bullet Create(Tank tank)
+        {
+            var angle = tank.HeadRotation;
+            var direction = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
+
+            return new Bullet(tank, direction);
         }
     }
 }

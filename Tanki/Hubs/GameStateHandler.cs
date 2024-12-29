@@ -4,7 +4,7 @@ using Tanki.Services.Interfaces;
 
 namespace Tanki.Hubs
 {
-    public class GameStateHandler : IGameStateHandler
+    public class GameStateHandler
     {
         private readonly IHubContext<SessionHub, ISessionHubClient> _hub;
 

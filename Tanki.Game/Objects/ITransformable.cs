@@ -2,7 +2,7 @@
 
 namespace Tanki.Game.Objects
 {
-    public interface IPositionProvider
+    public interface ITransformable
     {
         Vector2 Position { get; }
     }

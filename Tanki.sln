@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{C6E2D555-6D4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tanki.Game", "Tanki.Game\Tanki.Game.csproj", "{EC1A713A-5681-4412-A0E7-EE136A4043BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SfmlGame", "SfmlGame\SfmlGame.csproj", "{B6392D15-A1B8-4B24-B24F-0FFB7CE06F39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{EC1A713A-5681-4412-A0E7-EE136A4043BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC1A713A-5681-4412-A0E7-EE136A4043BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC1A713A-5681-4412-A0E7-EE136A4043BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6392D15-A1B8-4B24-B24F-0FFB7CE06F39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6392D15-A1B8-4B24-B24F-0FFB7CE06F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6392D15-A1B8-4B24-B24F-0FFB7CE06F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6392D15-A1B8-4B24-B24F-0FFB7CE06F39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

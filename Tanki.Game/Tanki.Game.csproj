@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Tanki.Domain\Tanki.Domain.csproj" />
-  </ItemGroup>
-
 </Project>
