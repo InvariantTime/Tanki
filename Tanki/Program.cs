@@ -36,10 +36,8 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.UseSession();
-
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");
-app.MapHub<SessionHub>("/ws/gameSession");
+app.MapHub<GameHub>("/ws/session/{sessionId}");
 
 app.Run();

@@ -1,5 +1,7 @@
 ﻿using Tanki.Domain.Repositories;
 using Tanki.Hubs;
+using Tanki.Infrastructure;
+using Tanki.Infrastructure.Intefaces;
 using Tanki.Persistence;
 using Tanki.Services;
 using Tanki.Services.Hashers;
@@ -11,19 +13,18 @@ namespace Tanki
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISessionService, SessionService>();
             //services.AddScoped<IGame, Game>();
 
             services.AddScoped<IHashService, ShaHasher>();
-
-            services.AddSingleton<IRoomChangedRouter, RoomHubContext>();
+            services.AddScoped<RoomHubContext>();
+            services.AddScoped<IAccountService, AccountService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
         }
     }

@@ -1,31 +1,40 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Tanki.Infrastructure;
 
 namespace Tanki
 {
     public static class AuthRegistryExtensions
     {
-        private const string _cookieKey = "Auth:Cookie";
+        private const string _cookieKey = "cookie";//TODO: cookie name from options
         private static readonly TimeSpan _cookieExpiration = TimeSpan.FromHours(1);
 
         public static void RegisterAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var cookieName = configuration[_cookieKey];
-
-            if (cookieName == null)
-                throw new Exception("Auth cookie secret is not defined");
-
-            services.AddDistributedMemoryCache();
-
-            services.AddSession(options =>
-            {
-                options.Cookie.Name = cookieName;
-                options.IdleTimeout = _cookieExpiration;
-                options.Cookie.IsEssential = true;
-            });
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Events = new JwtBearerEvents()
+                    {
+                        OnMessageReceived = OnMessageRecived
+                    };
+                });
         }
 
         public static void RegisterAuthorization(this IServiceCollection services)
         {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("roomPolicy", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                });
+            });
+        }
+
+        private static Task OnMessageRecived(MessageReceivedContext context)
+        {
+            context.Token = context.HttpContext.Request.Cookies[_cookieKey];
+            return Task.CompletedTask;
         }
     }
 }
