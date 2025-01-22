@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Tanki.Domain.Models;
+using Tanki.Infrastructure;
 using Tanki.Infrastructure.Intefaces;
 using Tanki.Requests;
 using Tanki.Responces;
@@ -12,12 +15,12 @@ namespace Tanki.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accounts;
-        private readonly IUserService _users;
+        private readonly AuthOptions _options;
 
-        public AccountController(IAccountService accounts, IUserService users)
+        public AccountController(IAccountService accounts, IOptions<AuthOptions> options)
         {
             _accounts = accounts;
-            _users = users;
+            _options = options.Value;
         }
 
         [HttpPost("register")]
@@ -28,7 +31,7 @@ namespace Tanki.Controllers
             if (result.IsSuccess == false)
                 return BadRequest(result.Error);
 
-            HttpContext.Response.Cookies.Append("cookie", result.Value!);
+            HttpContext.Response.Cookies.Append(_options.Cookie, result.Value!);
 
             return Ok();
         }
@@ -41,18 +44,17 @@ namespace Tanki.Controllers
             if (result.IsSuccess == false)
                 return BadRequest(result.Error);
 
-            HttpContext.Response.Cookies.Append("cookie", result.Value!);//TODO: Cookie name from options
+            HttpContext.Response.Cookies.Append(_options.Cookie, result.Value!);
 
             return Ok();
         }
 
         [Authorize]
         [HttpGet("verify")]
-        public async Task<IActionResult> Verify()
+        public Task<IActionResult> Verify(User user)
         {
-            var id = HttpContext.Request.Cookies["cookie"];
-
-            return Ok(new VerifyUserResponce(string.Empty, 0));
+            IActionResult ok = Ok(new VerifyUserResponce(user.Name, user.Score));
+            return Task.FromResult(ok);
         }
     }
 }

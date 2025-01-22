@@ -3,7 +3,7 @@ import { FocusableElement } from "@chakra-ui/utils";
 import { SyntheticEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const url = "http://localhost:5074/api/session";
+const url = "http://localhost:5074/api/session/create";
 
 interface Props {
     onClose: () => void

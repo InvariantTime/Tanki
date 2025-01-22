@@ -2,7 +2,7 @@ import { Button, FormControl, FormLabel, Heading, Input, Link, Text } from "@cha
 import { SyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const signInUrl = "http://localhost:5074/api/user/signin";
+const signInUrl = "http://localhost:5074/api/account/signin";
 
 export const SignInPage = () => {
 

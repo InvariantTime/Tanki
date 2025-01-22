@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,11 +14,13 @@ namespace Tanki.Infrastructure
     {
         private readonly AuthOptions _options;
         private readonly IUserService _users;
+        private readonly JwtSecurityTokenHandler _jwtHandler;
 
-        public AccountService(IUserService users)
+        public AccountService(IUserService users, IOptions<AuthOptions> options)
         {
             _users = users;
-            _options = new AuthOptions();
+            _options = options.Value;
+            _jwtHandler = new();
         }
 
         public async Task<Result<string>> SignIn(string name, string password)
@@ -44,6 +47,18 @@ namespace Tanki.Infrastructure
             return Result.Success(token);
         }
 
+        public async Task<Result<User>> GetUser(string key)
+        {
+            var token = _jwtHandler.ReadJwtToken(key);
+
+            var claim = token.Claims.First(x => x.Type == _options.UserIdClaim);
+
+            if (Guid.TryParse(claim.Value, out var id) == false)
+                return Result.Failure<User>("Unable to get user");
+
+            return await _users.GetUser(id);
+        }
+
         private string GenerateToken(User user)
         {
             Claim[] claims = [new Claim(_options.UserIdClaim, user.Id.ToString())];
@@ -57,9 +72,7 @@ namespace Tanki.Infrastructure
                 signingCredentials: credentials,
                 expires: DateTime.UtcNow.AddHours(_options.ExpitesHours));
 
-            var handler = new JwtSecurityTokenHandler();
-
-            return handler.WriteToken(token);
+            return _jwtHandler.WriteToken(token);
         }
     }
 }

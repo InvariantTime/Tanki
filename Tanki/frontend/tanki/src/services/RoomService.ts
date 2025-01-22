@@ -3,18 +3,15 @@ import { Room } from "../models/Room";
 import { STATUS_CODES } from "http";
 import { NavigateFunction } from "react-router-dom";
 
-const getRoomUrl = "http://localhost:5074/api/room?";
-const getCountUrl = "http://localhost:5074/api/room/count"
-const joinRoomUrl = "http://localhost:5074/api/session/join";
+const getRoomUrl = "http://localhost:5074/api/session/getRooms/";
+const getCountUrl = "http://localhost:5074/api/session/count/"
+const joinRoomUrl = "http://localhost:5074/api/session/join/";
 
 export class RoomService
 {
     public static async getRooms(page: number, pageSize: number) {
 
-        const url = getRoomUrl + new URLSearchParams({
-            "page": `${page}`,
-            "pageSize": `${pageSize}`
-        }).toString();
+        const url = getRoomUrl + `?page=${page}&pageSize=${pageSize}`;
 
         const options:RequestInit =
         {
@@ -46,10 +43,6 @@ export class RoomService
         }
 
         return 0;
-    }
-
-    public static createRoom() {
-        
     }
 
     public static async join(id: UUID, password: string, navigate: NavigateFunction) {

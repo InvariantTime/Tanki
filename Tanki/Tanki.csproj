@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="frontend\" />
-    <Folder Include="Filters\" />
   </ItemGroup>
 
   <ItemGroup>

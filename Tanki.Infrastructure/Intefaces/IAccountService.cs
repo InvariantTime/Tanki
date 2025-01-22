@@ -1,4 +1,5 @@
 ﻿using Tanki.Domain;
+using Tanki.Domain.Models;
 
 namespace Tanki.Infrastructure.Intefaces
 {
@@ -7,5 +8,7 @@ namespace Tanki.Infrastructure.Intefaces
         Task<Result<string>> SignIn(string name, string password);
 
         Task<Result<string>> Register(string name, string password);
+
+        Task<Result<User>> GetUser(string token);
     }
 }

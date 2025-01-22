@@ -10,7 +10,7 @@ import { RoomService } from "../services/RoomService";
 
 const hubUrl = "http://localhost:5074/ws/rooms";
 
-const pageSize = 1;
+const pageSize = 6;
 
 export const IndexPage = () => {
 

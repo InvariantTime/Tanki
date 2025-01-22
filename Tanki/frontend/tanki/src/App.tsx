@@ -14,7 +14,7 @@ function App() {
     <div className='bg-[url("../public/img/background.jpg")]
       bg-no-repeat h-screen bg-cover'>
 
-      {/*<BrowserRouter>
+      {<BrowserRouter>
         <Routes>
 
           <Route element={<PrivateRoute />}>
@@ -26,9 +26,8 @@ function App() {
           <Route path='/signin' element={<SignInPage />}/>
 
         </Routes>
-      </BrowserRouter>*/}
+      </BrowserRouter>}
 
-      <GameField/>
     </div>
   );
 }

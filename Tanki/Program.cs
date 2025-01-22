@@ -2,8 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Tanki.Persistence;
 using Tanki;
 using Tanki.Hubs;
+using Tanki.Infrastructure;
+using Tanki.Binders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
 
 builder.Services.AddCors(opt =>
 {
@@ -20,7 +24,11 @@ builder.Services.RegisterAuthentication(builder.Configuration);
 builder.Services.RegisterAuthorization();
 
 builder.Services.AddSignalR();
-builder.Services.AddControllers();
+
+builder.Services.AddControllers(op =>
+{
+    op.ModelBinderProviders.Insert(0, new CustomBinderProvider());
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -35,6 +43,9 @@ builder.Services.RegisterServices();
 var app = builder.Build();
 
 app.UseCors();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");

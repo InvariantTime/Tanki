@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Tanki.Services.Interfaces;
 
 namespace Tanki.Hubs
 {
-    public class RoomHubContext : IRoomChangedRouter
+    public class RoomHubContext
     {
         private readonly IHubContext<RoomHub, IRoomHubClient> _context;
 

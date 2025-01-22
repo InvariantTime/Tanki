@@ -1,21 +1,36 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Tanki.Infrastructure;
 
 namespace Tanki
 {
     public static class AuthRegistryExtensions
     {
-        private const string _cookieKey = "cookie";//TODO: cookie name from options
         private static readonly TimeSpan _cookieExpiration = TimeSpan.FromHours(1);
 
         public static void RegisterAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var settings = configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>()!;
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecretKey))
+                    };
+
                     options.Events = new JwtBearerEvents()
                     {
-                        OnMessageReceived = OnMessageRecived
+                        OnMessageReceived = (context) =>
+                        {
+                            context.Token = context.HttpContext.Request.Cookies[settings.Cookie];
+                            return Task.CompletedTask;
+                        }
                     };
                 });
         }
@@ -29,12 +44,6 @@ namespace Tanki
                     policy.RequireAuthenticatedUser();
                 });
             });
-        }
-
-        private static Task OnMessageRecived(MessageReceivedContext context)
-        {
-            context.Token = context.HttpContext.Request.Cookies[_cookieKey];
-            return Task.CompletedTask;
         }
     }
 }
