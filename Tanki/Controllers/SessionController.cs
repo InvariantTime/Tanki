@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tanki.Domain.Models;
 using Tanki.Hubs;
 using Tanki.Requests;
 using Tanki.Responces;
@@ -37,19 +38,14 @@ namespace Tanki.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody]RoomCreateRequest request)
+        public async Task<IActionResult> Create([FromBody]RoomCreateRequest request, User user)
         {
-            var userRaw = HttpContext.Session.Get(SessionOptions.SessionUserId);
-
-            if (userRaw == null)
-                return Unauthorized();
-
             var data = new SessionCreationInfo
             {
                 MaxPlayerCount = request.PlayerCount,
                 Name = request.Name,
                 Password = request.Password,
-                UserId = new Guid(userRaw)
+                UserId = user.Id
             };
 
             var success = await _service.Create(data);
@@ -63,8 +59,10 @@ namespace Tanki.Controllers
         }
 
         [HttpPost("join")]
-        public Task Join([FromBody]JoinRoomRequest request)
+        public Task Join([FromBody]JoinRoomRequest request, User user)
         {
+
+
             return Task.CompletedTask;
         }
 

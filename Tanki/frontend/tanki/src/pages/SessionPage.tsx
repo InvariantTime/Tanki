@@ -37,7 +37,7 @@ export const SessionPage = () => {
     const initConnection = async () => {
 
         const builder = new HubConnectionBuilder()
-            .withUrl(`http://localhost:5074/ws/gameSession?sessionId=${sessionId}`)
+            .withUrl(`http://localhost:5074/ws/session?sessionId=${sessionId}`)
             .configureLogging(LogLevel.Information);
 
         const connection = builder.build();
@@ -46,7 +46,16 @@ export const SessionPage = () => {
         connection.on("sessionClosed", onSessionClosed);
         connection.on("connectionError", onConnectionError);
         
-        await connection.start();
+        try
+        {
+            await connection.start();
+        }
+        catch
+        {
+            alert("accesss denied");
+            navigate("/");
+        }
+
         setConnection(connection);
     }
 

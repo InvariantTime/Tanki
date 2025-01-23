@@ -5,23 +5,14 @@ namespace Tanki.Services.Interfaces
 {
     public interface ISessionService
     {
-        Task<Result<Guid>> CreateSession(SessionCreationInfo info);
+        IEnumerable<GameSession> GetByPage(int index = 1, int pageSize = 1);
 
-        Task<Result<GameSession>> Join(Guid id, Guid user);
+        int GetCount();
 
-        Task<SessionLeaveStates> Leave(Guid id, Guid user);
+        Result<GameSession> GetById(Guid id);
 
-        IEnumerable<GameSession> GetAll();
+        Task<Result<GameSession>> Create(SessionCreationInfo info);
 
-        GameSession? Get(Guid id);
-
-        Result<Guid> GetJoinPermission(Guid room, string password);
-    }
-
-    public enum SessionLeaveStates
-    {
-        Failure,
-        Success,
-        IsHost,
+        //Result Join();
     }
 }

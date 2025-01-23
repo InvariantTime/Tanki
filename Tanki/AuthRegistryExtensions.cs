@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Tanki.Infrastructure;
+using Tanki.Infrastructure.Authentication;
 
 namespace Tanki
 {
@@ -37,13 +38,8 @@ namespace Tanki
 
         public static void RegisterAuthorization(this IServiceCollection services)
         {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("roomPolicy", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                });
-            });
+            services.AddSingleton<IAuthorizationHandler, RoomAccessHandler>();
+            services.AddAuthorization();
         }
     }
 }

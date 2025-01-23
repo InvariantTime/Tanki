@@ -17,22 +17,5 @@ namespace Tanki.Hubs
             _sessions = sessions;
             _users = users;
         }
-
-        public async Task Join()
-        {
-            var context = Context.GetHttpContext()!;
-
-            var userRaw = context.Session.Get(SessionOptions.SessionUserId);
-
-            if (userRaw == null)
-                return;
-
-            var userId = new Guid(userRaw);
-        }
-
-        public override Task OnDisconnectedAsync(Exception? exception)
-        {
-            return base.OnDisconnectedAsync(exception);
-        }
     }
 }

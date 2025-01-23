@@ -8,6 +8,6 @@
 
         public Guid UserId { get; init; }
 
-        public string Password { get; init; }
+        public string? Password { get; init; }
     }
 }

@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Tanki.Persistence;
 using Tanki;
 using Tanki.Hubs;
-using Tanki.Infrastructure;
 using Tanki.Binders;
+using Tanki.Infrastructure.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,7 @@ builder.Services.RegisterAuthentication(builder.Configuration);
 builder.Services.RegisterAuthorization();
 
 builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers(op =>
 {
@@ -49,6 +50,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");
-app.MapHub<GameHub>("/ws/session/{sessionId}");
+
+app.MapHub<GameHub>("/ws/session/{sessionId}")
+    .RequireAuthorization(op => op.AddRequirements(new RoomAccessRequirement("sessionId")));
 
 app.Run();
