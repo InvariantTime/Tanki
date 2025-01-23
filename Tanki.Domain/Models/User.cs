@@ -4,8 +4,6 @@
     {
         public Guid Id { get; set; }
 
-        public Room? Room { get; set; }
-
         public string Name { get; set; } = string.Empty;
 
         public string PaswordHash { get; set; } = string.Empty;

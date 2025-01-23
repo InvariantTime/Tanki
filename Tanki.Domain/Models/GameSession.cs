@@ -1,48 +1,32 @@
-﻿using System.Collections.Concurrent;
-
+﻿
 namespace Tanki.Domain.Models
 {
     public class GameSession
     {
-        private readonly ConcurrentDictionary<Guid, User> _users;
-        private readonly Room _room;
-        private readonly Guid _id;
+        public Guid Id { get; }
 
-        public Room Room => _room;
+        public string Name { get; }
 
-        public Guid Id => _id;
+        public string PasswordHash { get; }
 
-        public bool HasHost => 
-            _users.FirstOrDefault(x => x.Key == Room.HostId).Value != null;
+        public bool HasPassword => PasswordHash != string.Empty;
 
-        public ICollection<User> Users => _users.Values;
+        public SessionScene Scene { get; }
 
-        public GameSession(Room room, Guid id)
+        private GameSession(Guid id, SessionScene scene, string name, string passwordHash)
         {
-            _room = room;
-            _id = id;
-            _users = new();
+            Scene = scene;
+            Id = id;
+            Name = name;
+            PasswordHash = passwordHash;
         }
 
-        public bool AddUser(User user)
-        {
-            return _users.TryAdd(user.Id, user);
-        }
-
-        public bool RemoveUser(Guid user)
-        {
-            return _users.TryRemove(user, out _);
-        }
-
-        public bool IsHost(Guid user)
-        {
-            return _room.HostId == user;
-        }
-
-        public static GameSession Create(Room room)
+        public static GameSession Create(string name, SessionScene scene, string passwordHash = "")
         {
             var id = Guid.NewGuid();
-            return new GameSession(room, id);
+            var session = new GameSession(id, scene, name, passwordHash);
+
+            return session;
         }
     }
 }

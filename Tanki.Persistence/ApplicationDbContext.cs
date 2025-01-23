@@ -6,9 +6,7 @@ namespace Tanki.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Room> Rooms { get; set; }
-
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; } = null!;
 
         public ApplicationDbContext(DbContextOptions options) 
             : base(options)
@@ -19,7 +17,6 @@ namespace Tanki.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserModelBuilder());
-            modelBuilder.ApplyConfiguration(new RoomModelBuilder());
 
             base.OnModelCreating(modelBuilder);
         }
