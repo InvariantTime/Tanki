@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Tanki.Domain.Models;
 using Tanki.Hubs;
+using Tanki.Infrastructure.Authentication;
 using Tanki.Requests;
 using Tanki.Responces;
 using Tanki.Services;
@@ -15,11 +17,16 @@ namespace Tanki.Controllers
     public class SessionController : ControllerBase
     {
         private readonly ISessionService _service;
+        private readonly AuthOptions _options;
         private readonly RoomHubContext _hub;
 
-        public SessionController(ISessionService service, RoomHubContext hub)
+        public SessionController(
+            ISessionService service,
+            RoomHubContext hub, 
+            IOptions<AuthOptions> options)
         {
             _service = service;
+            _options = options.Value;
             _hub = hub;
         }
 
@@ -38,7 +45,9 @@ namespace Tanki.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody]RoomCreateRequest request, User user)
+        public async Task<IActionResult> Create(
+            [FromBody]RoomCreateRequest request, 
+            [FromRoute]User user)
         {
             var data = new SessionCreationInfo
             {
@@ -48,22 +57,36 @@ namespace Tanki.Controllers
                 UserId = user.Id
             };
 
-            var success = await _service.Create(data);
+            var result = await _service.Create(data);
 
-            if (success.IsSuccess == false)
-                return BadRequest(success.Error);
+            if (result.IsSuccess == false)
+                return BadRequest(result.Error);
 
             await _hub.OnRoomsChanged();
 
-            return Ok(success.Value!.Id);
+            if (result.Value!.HasPassword == true)
+            {
+                HttpContext.Response.Cookies
+                    .Append(_options.RoomAccessCookie, result.Value.PasswordHash);
+            }
+
+            return Ok(result.Value!.Id);
         }
 
-        [HttpPost("join")]
-        public Task Join([FromBody]JoinRoomRequest request, User user)
+        [HttpPost("access")]
+        public IActionResult Access([FromBody]JoinRoomRequest request)
         {
+            if (Guid.TryParse(request.Id, out var id) == false)
+                return BadRequest("Room not found");
 
+            var result = _service.Access(id, request.Password ?? string.Empty);
 
-            return Task.CompletedTask;
+            if (result.IsSuccess == false)
+                return BadRequest(result.Error);
+
+            HttpContext.Response.Cookies.Append(_options.RoomAccessCookie, result.Value!);
+
+            return Ok();
         }
 
         private IEnumerable<RoomInfo> GetRoomsInternal(int page, int pageSize)

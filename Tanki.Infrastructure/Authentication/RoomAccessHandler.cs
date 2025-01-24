@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Tanki.Services.Interfaces;
 
@@ -15,11 +16,11 @@ namespace Tanki.Infrastructure.Authentication
         public RoomAccessHandler(
             IHttpContextAccessor accessor, 
             IServiceScopeFactory factory,
-            AuthOptions options)
+            IOptions<AuthOptions> options)
         {
             _accessor = accessor;
             _scopeFactory = factory;
-            _options = options;
+            _options = options.Value;
         }
 
         protected override Task HandleRequirementAsync(
@@ -48,7 +49,7 @@ namespace Tanki.Infrastructure.Authentication
 
             var passwordHash = request.Cookies[_options.RoomAccessCookie];
 
-            if (session.Value!.PasswordHash != passwordHash)
+            if (session.Value!.PasswordHash == passwordHash)
                 context.Succeed(requirement);
 
             return Task.CompletedTask;

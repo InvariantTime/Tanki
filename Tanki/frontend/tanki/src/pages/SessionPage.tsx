@@ -42,17 +42,14 @@ export const SessionPage = () => {
 
         const connection = builder.build();
         
-        connection.on("playersChanged", onPlayerChanged);
-        connection.on("sessionClosed", onSessionClosed);
-        connection.on("connectionError", onConnectionError);
         
         try
         {
             await connection.start();
         }
-        catch
+        catch (e)
         {
-            alert("accesss denied");
+            alert(e);
             navigate("/");
         }
 

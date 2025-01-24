@@ -13,6 +13,6 @@ namespace Tanki.Services.Interfaces
 
         Task<Result<GameSession>> Create(SessionCreationInfo info);
 
-        //Result Join();
+        Result<string> Access(Guid session, string password);
     }
 }

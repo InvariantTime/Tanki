@@ -5,7 +5,7 @@ import { NavigateFunction } from "react-router-dom";
 
 const getRoomUrl = "http://localhost:5074/api/session/getRooms/";
 const getCountUrl = "http://localhost:5074/api/session/count/"
-const joinRoomUrl = "http://localhost:5074/api/session/join/";
+const accessRoomUrl = "http://localhost:5074/api/session/access/";
 
 export class RoomService
 {
@@ -61,18 +61,20 @@ export class RoomService
             }
         };
 
-        const result = await fetch(joinRoomUrl, options);
-
-        if (result.ok) {
-            const session = await result.json();
-            navigate(`/session/${session}`);
+        try
+        {
+            const result = await fetch(accessRoomUrl, options);
+            if (result.ok) {
+                navigate(`/session/${id}`);
+            }
+            else {
+                const error = await result.text();
+                alert(error);
+            }
         }
-        else if (result.status === 401) {
-            navigate("/signin");
-        }
-        else {
-            const error = await result.json();
-            alert(error);
+        catch (e)
+        {
+            alert(`internal error: ${e}`);
         }
     }
 }

@@ -34,6 +34,9 @@ namespace Tanki
                         }
                     };
                 });
+
+
+            services.Configure<AuthOptions>(configuration.GetSection(nameof(AuthOptions)));
         }
 
         public static void RegisterAuthorization(this IServiceCollection services)

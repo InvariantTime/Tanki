@@ -54,5 +54,23 @@ namespace Tanki.Services
         {
             return _sessions.Get(id);
         }
+
+        public Result<string> Access(Guid sessionId, string password)
+        {
+            var session = _sessions.Get(sessionId);
+
+            if (session.IsSuccess == false)
+                return Result.Failure<string>(session.Error);
+
+            if (session.Value!.HasPassword == false)
+                return Result.Success(string.Empty);
+
+            bool correctPassword = _hasher.Compare(session.Value.PasswordHash, password);
+
+            if (correctPassword == false)
+                return Result.Failure<string>("invalid password");
+
+            return Result.Success(session.Value.PasswordHash);
+        }
     }
 }

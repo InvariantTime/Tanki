@@ -7,8 +7,6 @@ using Tanki.Infrastructure.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
-
 builder.Services.AddCors(opt =>
 {
     opt.AddDefaultPolicy(policy =>
@@ -51,7 +49,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");
 
-app.MapHub<GameHub>("/ws/session/{sessionId}")
+app.MapHub<GameHub>("/ws/session")
     .RequireAuthorization(op => op.AddRequirements(new RoomAccessRequirement("sessionId")));
 
 app.Run();
