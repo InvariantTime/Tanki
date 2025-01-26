@@ -15,6 +15,7 @@ export const SessionPage = () => {
 
     const onPlayerChanged = (players: Player[]) =>
     {
+        alert(players.length);
         setPlayers(players.sort((a, b) => a.score > b.score ? -1 : 1));
     }
 
@@ -41,7 +42,8 @@ export const SessionPage = () => {
             .configureLogging(LogLevel.Information);
 
         const connection = builder.build();
-        
+
+        connection.on("OnPlayersChanged", onPlayerChanged);
         
         try
         {

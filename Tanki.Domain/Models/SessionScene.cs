@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 
 namespace Tanki.Domain.Models
 {
     public class SessionScene
     {
-        private readonly Dictionary<Guid, User> _users;
+        private readonly ConcurrentDictionary<Guid, User> _users;
         private readonly User _owner;
 
         public uint MaxPlayers { get; }
@@ -15,21 +16,21 @@ namespace Tanki.Domain.Models
 
         public SessionScene(User owner, uint maxPlayers)
         {
-            _users = new Dictionary<Guid, User>();
+            _users = new();
             _owner = owner;
 
             MaxPlayers = maxPlayers;
             Users = new ReadOnlyDictionary<Guid, User>(_users);
         }
 
-        public Result AddPlayer(User user)
+        public bool AddPlayer(User user)
         {
             if (_users.ContainsKey(user.Id) == true)
-                return Result.Failure($"{user.Name} is already joined");
+                return false;
 
-            _users.Add(user.Id, user);
+            var result = _users.TryAdd(user.Id, user);
 
-            return Result.Success();
+            return result;
         }
     }
 }
