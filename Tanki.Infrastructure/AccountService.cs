@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -48,8 +49,13 @@ namespace Tanki.Infrastructure
             return Result.Success(token);
         }
 
-        public async Task<Result<User>> GetUser(string key)
+        public async Task<Result<User>> GetUser(HttpContext context)
         {
+            var key = context.Request.Cookies[_options.Cookie];
+
+            if (key == null)
+                return Result.Failure<User>("Unable to get authentication token");
+
             var token = _jwtHandler.ReadJwtToken(key);
 
             var claim = token.Claims.First(x => x.Type == _options.UserIdClaim);

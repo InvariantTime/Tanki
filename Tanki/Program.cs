@@ -4,6 +4,7 @@ using Tanki;
 using Tanki.Hubs;
 using Tanki.Binders;
 using Tanki.Infrastructure.Authentication;
+using Tanki.Infrastructure.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +50,8 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<RoomHub>("/ws/rooms");
 
-app.MapHub<GameHub>("/ws/session")
-    .RequireAuthorization(op => op.AddRequirements(new RoomAccessRequirement("sessionId")));
+app.MapHub<GameServer>("/ws/session")
+    .RequireAuthorization(op => op.AddRequirements(
+        new RoomAccessRequirement("sessionId")));
 
 app.Run();

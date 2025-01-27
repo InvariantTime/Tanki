@@ -1,4 +1,5 @@
-﻿using Tanki.Domain;
+﻿using Microsoft.AspNetCore.Http;
+using Tanki.Domain;
 using Tanki.Domain.Models;
 
 namespace Tanki.Infrastructure.Intefaces
@@ -9,6 +10,6 @@ namespace Tanki.Infrastructure.Intefaces
 
         Task<Result<string>> Register(string name, string password);
 
-        Task<Result<User>> GetUser(string token);
+        Task<Result<User>> GetUser(HttpContext context);
     }
 }

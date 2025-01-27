@@ -28,9 +28,7 @@ namespace Tanki.Binders
                 return;
             }
 
-            var cookie = http.Request.Cookies[_options.Cookie]!;
-
-            var user = await _accounts.GetUser(cookie);
+            var user = await _accounts.GetUser(http);
 
             if (user.IsSuccess == false)
             {

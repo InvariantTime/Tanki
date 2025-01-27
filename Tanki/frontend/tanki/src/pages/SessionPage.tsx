@@ -2,40 +2,28 @@ import { GameField } from "../components/GameField";
 import { SessionEditor } from "../components/SessionEditor";
 import { PlayerList } from "../components/PlayerList";
 import { useEffect, useState } from "react";
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { Player } from "../models/Player";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const SessionPage = () => {
 
     const [players, setPlayers] = useState<Player[]>([]);
-    const [connection, setConnection] = useState<signalR.HubConnection>();
     const { sessionId } = useParams<{sessionId:string}>();
     const navigate = useNavigate();
 
     const onPlayerChanged = (players: Player[]) =>
     {
-        alert(players.length);
         setPlayers(players.sort((a, b) => a.score > b.score ? -1 : 1));
-    }
-
-    const onSessionClosed = (players: Player[]) =>
-    {
-        connection?.stop();
-
-        alert("Host close the session");
-        navigate("/");
     }
 
     const onConnectionError = () =>
     {
-        connection?.stop();
-
         alert("Unable to connect to session");
         navigate("/");
     }
 
-    const initConnection = async () => {
+    const initConnection = () : HubConnection => {
 
         const builder = new HubConnectionBuilder()
             .withUrl(`http://localhost:5074/ws/session?sessionId=${sessionId}`)
@@ -45,17 +33,7 @@ export const SessionPage = () => {
 
         connection.on("OnPlayersChanged", onPlayerChanged);
         
-        try
-        {
-            await connection.start();
-        }
-        catch (e)
-        {
-            alert(e);
-            navigate("/");
-        }
-
-        setConnection(connection);
+        return connection;
     }
 
 
@@ -64,12 +42,14 @@ export const SessionPage = () => {
         if (!sessionId)
             return;
 
-        initConnection();
+        const connection = initConnection();
+        connection.start();
 
         return () => {
-             connection?.stop();
+            if (connection.state === HubConnectionState.Connected)
+                connection.stop();
         }
-    }, []);
+    }, [sessionId]);
 
     return (
         <div className="p-3 w-full">
