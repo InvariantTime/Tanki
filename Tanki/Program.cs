@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Tanki.Persistence;
 using Tanki;
-using Tanki.Hubs;
 using Tanki.Binders;
 using Tanki.Infrastructure.Authentication;
-using Tanki.Infrastructure.Server;
+using Tanki.Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 

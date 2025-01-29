@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Tanki.Domain.Models;
-using Tanki.Hubs;
+using Tanki.Infrastructure;
 using Tanki.Infrastructure.Authentication;
 using Tanki.Requests;
 using Tanki.Responces;
@@ -18,16 +18,16 @@ namespace Tanki.Controllers
     {
         private readonly ISessionService _service;
         private readonly AuthOptions _options;
-        private readonly RoomHubContext _hub;
+        private readonly RoomChangedNotifier _notifer;
 
         public SessionController(
             ISessionService service,
-            RoomHubContext hub, 
+            RoomChangedNotifier notifier, 
             IOptions<AuthOptions> options)
         {
             _service = service;
             _options = options.Value;
-            _hub = hub;
+            _notifer = notifier;
         }
 
         [HttpGet("getRooms")]
@@ -62,7 +62,7 @@ namespace Tanki.Controllers
             if (result.IsSuccess == false)
                 return BadRequest(result.Error);
 
-            await _hub.OnRoomsChanged();
+            await _notifer.OnRoomsChanged();
 
             if (result.Value!.HasPassword == true)
             {

@@ -50,6 +50,11 @@ namespace Tanki.Services
             return Result.Success(session);
         }
 
+        public Result Remove(Guid id)
+        {
+            return _sessions.Remove(id);
+        }
+
         public Result<GameSession> GetById(Guid id)
         {
             return _sessions.Get(id);

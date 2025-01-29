@@ -7,7 +7,6 @@ using System.Text;
 using Tanki.Domain;
 using Tanki.Domain.Models;
 using Tanki.Infrastructure.Authentication;
-using Tanki.Infrastructure.Intefaces;
 using Tanki.Services.Interfaces;
 
 namespace Tanki.Infrastructure

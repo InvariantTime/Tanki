@@ -2,7 +2,7 @@
 using Tanki.Domain;
 using Tanki.Domain.Models;
 
-namespace Tanki.Infrastructure.Intefaces
+namespace Tanki.Infrastructure
 {
     public interface IAccountService
     {

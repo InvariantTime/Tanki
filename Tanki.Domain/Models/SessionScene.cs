@@ -23,27 +23,19 @@ namespace Tanki.Domain.Models
             Users = new ReadOnlyDictionary<Guid, User>(_users);
         }
 
-        public AddingUserResults AddPlayer(User user)
+        public bool AddPlayer(User user)
         {
             if (_users.ContainsKey(user.Id) == true)
-                return AddingUserResults.HasAlready;
+                return true;
 
             var result = _users.TryAdd(user.Id, user);
 
-            return result == true ? AddingUserResults.Success 
-                : AddingUserResults.Error;
+            return result;
         }
 
         public bool RemovePlayer(User user)
         {
             return _users.TryRemove(user.Id, out _);
         }
-    }
-
-    public enum AddingUserResults
-    {
-        Success,
-        HasAlready,
-        Error
     }
 }

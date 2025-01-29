@@ -1,7 +1,5 @@
 ﻿using Tanki.Domain.Repositories;
-using Tanki.Hubs;
 using Tanki.Infrastructure;
-using Tanki.Infrastructure.Intefaces;
 using Tanki.Persistence;
 using Tanki.Services;
 using Tanki.Services.Hashers;
@@ -18,7 +16,7 @@ namespace Tanki
             //services.AddScoped<IGame, Game>();
 
             services.AddScoped<IHashService, ShaHasher>();
-            services.AddScoped<RoomHubContext>();
+            services.AddScoped<RoomChangedNotifier>();
             services.AddScoped<IAccountService, AccountService>();
         }
 

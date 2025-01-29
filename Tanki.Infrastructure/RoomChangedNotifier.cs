@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Tanki.Infrastructure.Hubs;
 
-namespace Tanki.Hubs
+namespace Tanki.Infrastructure
 {
-    public class RoomHubContext
+    public class RoomChangedNotifier
     {
         private readonly IHubContext<RoomHub, IRoomHubClient> _context;
 
-        public RoomHubContext(IHubContext<RoomHub, IRoomHubClient> context)
+        public RoomChangedNotifier(IHubContext<RoomHub, IRoomHubClient> context)
         {
             _context = context;
         }

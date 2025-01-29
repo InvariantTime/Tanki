@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Tanki.Domain.Models;
+using Tanki.Infrastructure;
 using Tanki.Infrastructure.Authentication;
-using Tanki.Infrastructure.Intefaces;
 using Tanki.Requests;
 using Tanki.Responces;
 using Tanki.Services.Interfaces;

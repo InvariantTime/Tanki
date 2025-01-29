@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace Tanki.Hubs
+namespace Tanki.Infrastructure.Hubs
 {
     public interface IRoomHubClient
     {

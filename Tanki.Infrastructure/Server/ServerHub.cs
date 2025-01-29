@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Tanki.Domain.Models;
-using Tanki.Infrastructure.Intefaces;
 using Tanki.Services.Interfaces;
 
 namespace Tanki.Infrastructure.Server
@@ -10,7 +9,7 @@ namespace Tanki.Infrastructure.Server
     {
         Task OnPlayersChanged(IEnumerable<UserInfo> users);
 
-        Task OnFatal(string message);
+        Task Shutdown(string message);
     }
 
     public abstract class ServerHub<T> : Hub<T> where T : class, IServerClient
@@ -19,11 +18,16 @@ namespace Tanki.Infrastructure.Server
 
         private readonly ISessionService _sessions;
         private readonly IAccountService _accounts;
+        private readonly RoomChangedNotifier _notifier;
 
-        public ServerHub(ISessionService sessions, IAccountService accounts)
+        public ServerHub(
+            ISessionService sessions,
+            IAccountService accounts,
+            RoomChangedNotifier notifier)
         {
             _sessions = sessions;
             _accounts = accounts;
+            _notifier = notifier;
         }
 
         public sealed override async Task OnConnectedAsync()
@@ -31,18 +35,23 @@ namespace Tanki.Infrastructure.Server
             var user = await GetUser();
             var session = GetSession();
 
-            var result = session.Scene.AddPlayer(user);
-
-            if (result == AddingUserResults.Error)
+            if (session == null)
             {
-                await Clients.Caller.OnFatal("Unable to connect");
+                await Clients.Caller.Shutdown("Unable to connect to session");
                 return;
             }
 
-            if (result == AddingUserResults.HasAlready)
-                await Groups.AddToGroupAsync(Context.ConnectionId, session.Id.ToString());
+            var result = session.Scene.AddPlayer(user);
 
+            if (result == false)
+            {
+                await Clients.Caller.Shutdown("Unable to connect");
+                return;
+            }
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, session.Id.ToString());
             await SendPlayersInfos(session);
+            await _notifier.OnRoomsChanged();
 
             await base.OnConnectedAsync();
         }
@@ -52,32 +61,36 @@ namespace Tanki.Infrastructure.Server
             var user = await GetUser();
             var session = GetSession();
 
+            if (session == null)
+                return;
+
             session.Scene.RemovePlayer(user);
 
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, session.Id.ToString());
             await SendPlayersInfos(session);
 
             if (session.Scene.Owner.Id == user.Id)
-                await ShutdownSession();
+                await ShutdownSession(session);
 
+            await _notifier.OnRoomsChanged();
             await base.OnDisconnectedAsync(exception);
         }
 
-        protected GameSession GetSession()
+        protected GameSession? GetSession()
         {
             var http = Context.GetHttpContext()!;
             var query = http.Request.Query[_sessionId];
 
             if (query.IsNullOrEmpty() == true)
             {
-                Clients.Caller.OnFatal("unable to connect to session");
-                throw new HubException();
+                Clients.Caller.Shutdown("unable to connect to session");
+                return null;
             }
 
             if (Guid.TryParse(query, out var id) == false)
             {
-                Clients.Caller.OnFatal("unable to connect to session");
-                throw new HubException();
+                Clients.Caller.Shutdown("unable to connect to session");
+                return null;
             }
 
             return _sessions.GetById(id).Value!;
@@ -91,7 +104,7 @@ namespace Tanki.Infrastructure.Server
 
             if (result.IsSuccess == false)
             {
-                await Clients.Caller.OnFatal(result.Error);
+                await Clients.Caller.Shutdown(result.Error);
                 throw new HubException(result.Error);
             }
 
@@ -108,9 +121,12 @@ namespace Tanki.Infrastructure.Server
                 .OnPlayersChanged(users);
         }
 
-        private Task ShutdownSession()
+        private async Task ShutdownSession(GameSession session)
         {
-            return Task.CompletedTask;
+            await Clients.Group(session.Id.ToString())
+                .Shutdown("host closed session");
+            
+            _sessions.Remove(session.Id);
         }
     }
 }

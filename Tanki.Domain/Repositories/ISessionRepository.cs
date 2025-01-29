@@ -11,5 +11,7 @@ namespace Tanki.Domain.Repositories
         IEnumerable<GameSession> GetByPage(int index = 1, int pageSize = 1);
 
         Result Add(GameSession session);
+
+        Result Remove(Guid id);
     }
 }

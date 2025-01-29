@@ -38,5 +38,15 @@ namespace Tanki.Domain.Repositories
 
             return Result.Success();
         }
+
+        public Result Remove(Guid id)
+        {
+            var result = _sessions.TryRemove(id, out _);
+
+            if (result == true)
+                return Result.Success();
+
+            return Result.Failure("Unable to remove session");
+        }
     }
 }

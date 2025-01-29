@@ -17,9 +17,9 @@ export const SessionPage = () => {
         setPlayers(players.sort((a, b) => a.score > b.score ? -1 : 1));
     }
 
-    const onConnectionError = () =>
+    const onShutdown = (message: string) =>
     {
-        alert("Unable to connect to session");
+        alert(message);
         navigate("/");
     }
 
@@ -32,6 +32,7 @@ export const SessionPage = () => {
         const connection = builder.build();
 
         connection.on("OnPlayersChanged", onPlayerChanged);
+        connection.on("Shutdown", onShutdown);
         
         return connection;
     }

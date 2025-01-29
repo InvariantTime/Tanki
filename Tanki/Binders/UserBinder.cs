@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Tanki.Domain.Models;
+using Tanki.Infrastructure;
 using Tanki.Infrastructure.Authentication;
-using Tanki.Infrastructure.Intefaces;
 using Tanki.Services.Interfaces;
 
 namespace Tanki.Binders
