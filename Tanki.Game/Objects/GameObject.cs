@@ -1,48 +1,39 @@
-﻿using System.Numerics;
-using Tanki.Game.Collision;
+﻿using Tanki.Game.Collision;
+using Tanki.Game.Visualization;
 
 namespace Tanki.Game.Objects
 {
-    public abstract class GameObject : ITransformable
+    public abstract class GameObject
     {
-        public Vector2 Position { get; private set; }
-
-        public Vector2 Velocity { get; private set; }
-
         public bool IsDestroyed { get; private set; }
+
+        public ObjectMotion Motion { get; }
 
         public Collider Collider { get; }
 
         public GameObject(float radius)
         {
-            Collider = new Collider(this, radius);
+            Motion = new ObjectMotion();
+            Collider = new Collider(Motion, radius);
         }
 
         public abstract void OnCollide(GameObject other);
 
         public abstract void OnCollide(World world);
+        
+        public abstract void Draw(GameVisualizer visualizer);
 
-        protected abstract void OnUpdate();
+        protected abstract void OnUpdate(GameContext context);
 
-        public void Update(float dt)
+        public void Update(GameContext context)
         {
-            OnUpdate();
-            Position += Velocity * dt;
+            OnUpdate(context);
+            Motion.Update(context.DeltaTime);
         }
 
         public void Destroy()
         {
             IsDestroyed = true;
-        }
-
-        public void SetPosition(Vector2 position)
-        {
-            Position = position;
-        }
-
-        public void SetVelocity(Vector2 velocity)
-        {
-            Velocity = velocity;
         }
     }
 }

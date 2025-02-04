@@ -1,30 +1,38 @@
 ﻿using Tanki.Game.Collision;
+using Tanki.Game.Visualization;
 
 namespace Tanki.Game
 {
     public class Game
     {
         private readonly CollisionResolver _collisions;
+        private readonly GameVisualizer _visualizer;
 
         public Game()
         {
             _collisions = new CollisionResolver();
+            _visualizer = new GameVisualizer();
         }
 
         public GameVisual Update(Scene scene)
         {
+            var context = new GameContext
+            {
+                DeltaTime = 1,
+                Instantiater = scene.AddObject,
+                Objects = scene.Objects,
+                World = scene.World,
+            };
+
             foreach (var obj in scene.Objects)
-                obj.Update(1);
+                obj.Update(context);
 
             _collisions.Resolve(scene.World, scene.Objects);
 
             scene.UpdateState();
 
-            return new GameVisual
-            {
-                Objects = scene.Objects,
-                World = scene.World
-            };
+            var visual = _visualizer.Visualize(scene);
+            return visual;
         }
     }
 }

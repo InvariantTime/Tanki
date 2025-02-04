@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Tanki.Game.Visualization;
 
 namespace Tanki.Game.Objects
 {
@@ -6,18 +7,29 @@ namespace Tanki.Game.Objects
     {
         public const float Radius = 5;
 
-        private const float _speed = 0.5f;
+        private const float _speed = 0.3f;
 
         public Tank Owner { get; }
 
-        private Bullet(Tank owner, Vector2 direction) : base(Radius)
+        public Bullet(Tank owner, Vector2 position, Vector2 direction) : base(Radius)
         {
             Owner = owner;
-            SetVelocity(Vector2.Normalize(direction) * _speed);
+            Motion.SetPosition(position);
+            Motion.SetVelocity(Vector2.Normalize(direction) * _speed);
         }
 
-        protected override void OnUpdate()
+        protected override void OnUpdate(GameContext context)
         {
+        }
+
+        public override void Draw(GameVisualizer visualizer)
+        {
+            var visual = new BulletVisual
+            {
+                Position = Motion.Position
+            };
+
+            visualizer.AddVisual(visual);
         }
 
         public override void OnCollide(GameObject other)
@@ -31,14 +43,6 @@ namespace Tanki.Game.Objects
         public override void OnCollide(World world)
         {
             Destroy();
-        }
-
-        public static Bullet Create(Tank tank)
-        {
-            var angle = tank.HeadRotation;
-            var direction = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
-
-            return new Bullet(tank, direction);
         }
     }
 }
