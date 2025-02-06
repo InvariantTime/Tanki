@@ -41,20 +41,19 @@ namespace Tanki.Game.Objects
             if (commands.Shoot == true)
                 _cannon.Shoot(context);
 
+            Rotation += commands.Rotation;
+
             ChangeMoveState(context, commands.Move);
         }
 
         public override void Draw(GameVisualizer visualizer)
         {
-            var visual = new TankVisual
-            {
-                HeadRotation = _cannon.Rotation,
-                Health = Health,
-                Position = Motion.Position,
-                Rotation = Rotation
-            };
+            var visual = visualizer.AllocateVisual("tank");
 
-            visualizer.AddVisual(visual);
+            visual.InsertObject("position", new VisualPoint(Motion.Position.X, Motion.Position.Y));
+            visual.InsertObject("rotation", Rotation);
+            visual.InsertObject("head", _cannon.Rotation);
+            visual.InsertObject("health", Health);
         }
 
         public override void OnCollide(GameObject other)
@@ -70,6 +69,10 @@ namespace Tanki.Game.Objects
 
         public override void OnCollide(World world)
         {
+            var correctional = world.GetCorrectionalPosition(Radius, Motion.Position);
+            Motion.SetPosition(correctional);
+
+            _controller.AddTankEvent(TankEvents.WallCollided);
         }
 
         public void ApplyDamage()

@@ -1,19 +1,23 @@
-﻿using Tanki.Game.Objects;
-
+﻿
 namespace Tanki.Game.Visualization
 {
     public class GameVisualizer
     {
-        private readonly List<IVisualObject> _visuals;
+        private readonly List<VisualComposition> _visuals;
 
         public GameVisualizer()
         {
             _visuals = new();
         }
 
-        public void AddVisual(IVisualObject visual)
+        public VisualComposition AllocateVisual(string name)
         {
+            var visual = new VisualComposition();
+            visual.Object = name;
+
             _visuals.Add(visual);
+
+            return visual;
         }
 
         public GameVisual Visualize(Scene scene)

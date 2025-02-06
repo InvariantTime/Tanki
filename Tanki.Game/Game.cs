@@ -14,11 +14,11 @@ namespace Tanki.Game
             _visualizer = new GameVisualizer();
         }
 
-        public GameVisual Update(Scene scene)
+        public GameVisual Update(Scene scene, float deltaTime)
         {
             var context = new GameContext
             {
-                DeltaTime = 1,
+                DeltaTime = deltaTime,
                 Instantiater = scene.AddObject,
                 Objects = scene.Objects,
                 World = scene.World,

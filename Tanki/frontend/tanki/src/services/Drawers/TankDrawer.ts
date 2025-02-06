@@ -1,21 +1,19 @@
-import { Tank, TankColors, Transformable } from "../../models/GameModels";
+import { TankColors, VisualComposition, Vector2 } from "../../models/GameModels";
 
-const tankW = 75;
-const tankH = 100;
-const headSize = 60;
-const rollSize = 20;
-const weaponW = 25;
-const weaponH = 70;
+const tankW = 45;
+const tankH = 45;
+const headSize = 30;
+const rollSize = 7;
+const weaponW = 11;
+const weaponH = 35;
 const textOffset = 34;
 const textW = 5;
 
-export const drawTank = (context: CanvasRenderingContext2D, obj: Transformable) => {
+export const drawTank = (context: CanvasRenderingContext2D, tank: VisualComposition) => {
 
-    const tank = obj as Tank;
-
-    const position = tank.position;
-    const rotation = tank.rotation / 180 * Math.PI;
-    const headRotation = tank.headRotation / 180 * Math.PI;
+    const position = tank.values["position"] as Vector2;
+    const rotation =  (tank.values["rotation"] as number) / 180 * Math.PI;
+    const headRotation = (tank.values["head"] as number) / 180 * Math.PI;
 
     context.translate(position.x + tankW / 2, position.y + tankH / 2);
     context.rotate(rotation);
@@ -26,7 +24,7 @@ export const drawTank = (context: CanvasRenderingContext2D, obj: Transformable) 
     context.fillRect(position.x - rollSize / 2, position.y, tankW + rollSize, tankH);
 
 
-    context.fillStyle = getBodyColor(tank.color);
+    context.fillStyle = getBodyColor(TankColors.Red);
     context.fillRect(position.x, position.y, tankW, tankH);
 
     context.translate(position.x + tankW / 2, position.y + tankH / 2);
@@ -34,22 +32,12 @@ export const drawTank = (context: CanvasRenderingContext2D, obj: Transformable) 
 
     context.translate(-position.x - tankW / 2, -position.y - tankH / 2);
 
-    context.fillStyle = getHeadColor(tank.color);
+    context.fillStyle = getHeadColor(TankColors.Red);
     context.fillRect(position.x + (tankW - headSize) / 2,
         position.y + (tankH - headSize) / 2, headSize, headSize);
 
     context.fillStyle = "rgb(100, 100, 100)";
     context.fillRect(position.x + (tankW - weaponW) / 2, position.y - tankH / 2, weaponW, weaponH);
-
-    context.translate(position.x + tankW / 2, position.y + tankH / 2);
-    context.rotate(-headRotation - rotation);
-    context.translate(-position.x - tankW / 2, -position.y - tankH / 2);
-
-    context.font = "30px Arial";
-    context.fillStyle = "rgb(10, 10, 10)";
-    context.fillText(tank.owner, position.x, position.y + tankH + textOffset, tankW + textW);
-
-    context.restore();
 }
 
 

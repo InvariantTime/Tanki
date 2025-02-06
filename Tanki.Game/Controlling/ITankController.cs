@@ -1,6 +1,4 @@
-﻿using Tanki.Game.Objects;
-
-namespace Tanki.Game.Controlling
+﻿namespace Tanki.Game.Controlling
 {
     public interface ITankController
     {

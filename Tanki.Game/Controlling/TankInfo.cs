@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Tanki.Game.Objects
+namespace Tanki.Game.Controlling
 {
     public readonly ref struct TankInfo
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Numerics;
 using Tanki.Game.Objects;
 
 namespace Tanki.Game
@@ -39,6 +40,11 @@ namespace Tanki.Game
         public void AddObject(GameObject @object)
         {
             _temps.Enqueue(@object);
+        }
+
+        public static Scene CreateDefault()
+        {
+            return new Scene(new World(new Vector2(900, 900)));
         }
     }
 }

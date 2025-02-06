@@ -18,17 +18,17 @@ namespace Tanki.Game.Collision
             var distance = _radius + other._radius;
             var dif = _motion.Position - other._motion.Position;
 
-            return dif.Length() <= distance;
+            return dif.Length() < distance;
         }
 
         public bool CollideWith(World world)
         {
             var pos = _motion.Position;
 
-            if (pos.X + _radius >= world.Size.X || pos.X - _radius <= 0)
+            if (pos.X + _radius > world.Width || pos.X - _radius < 0)
                 return true;
 
-            if (pos.Y + _radius >= world.Size.Y || pos.Y - _radius <= 0)
+            if (pos.Y + _radius > world.Height || pos.Y - _radius < 0)
                 return true;
 
             return false;

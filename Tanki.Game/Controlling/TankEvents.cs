@@ -4,5 +4,6 @@
     {
         Destroed,
         Attacked,
+        WallCollided
     }
 }

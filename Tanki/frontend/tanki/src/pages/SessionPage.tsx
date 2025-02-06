@@ -5,11 +5,15 @@ import { useEffect, useState } from "react";
 import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { Player } from "../models/Player";
 import { useNavigate, useParams } from "react-router-dom";
+import { GameScene } from "../models/GameScene";
+import { SceneData } from "../models/GameModels";
 
 export const SessionPage = () => {
 
+    const [connection, setConnection] = useState<HubConnection>();
     const [players, setPlayers] = useState<Player[]>([]);
     const { sessionId } = useParams<{sessionId:string}>();
+    const [scene, setScene] = useState<GameScene>(new GameScene());
     const navigate = useNavigate();
 
     const onPlayerChanged = (players: Player[]) =>
@@ -33,10 +37,20 @@ export const SessionPage = () => {
 
         connection.on("OnPlayersChanged", onPlayerChanged);
         connection.on("Shutdown", onShutdown);
+        connection.on("VisualizeScene", visualizeScene);
         
         return connection;
     }
 
+    const sendCode = async (code: string) : Promise<any> =>
+    {
+        return connection?.invoke("SendCode", code);
+    }
+
+    const visualizeScene = (data: SceneData) =>
+    {
+        scene.changeState(data);
+    }
 
     useEffect(() => {
 
@@ -44,6 +58,8 @@ export const SessionPage = () => {
             return;
 
         const connection = initConnection();
+        setConnection(connection);
+
         connection.start();
 
         return () => {
@@ -64,11 +80,11 @@ export const SessionPage = () => {
                 </div>
 
                 <div className="w-[50%]">
-                    <GameField />
+                    <GameField scene={scene}/>
                 </div>
 
                 <div className="w-[28%]">
-                    <SessionEditor />
+                    <SessionEditor sendConnectionFunc={sendCode}/>
                 </div>
             </div>
         </div>

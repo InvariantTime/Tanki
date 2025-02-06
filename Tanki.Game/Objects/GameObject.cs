@@ -27,6 +27,9 @@ namespace Tanki.Game.Objects
 
         public void Update(GameContext context)
         {
+            if (IsDestroyed == true)
+                return;
+
             OnUpdate(context);
             Motion.Update(context.DeltaTime);
         }

@@ -24,12 +24,8 @@ namespace Tanki.Game.Objects
 
         public override void Draw(GameVisualizer visualizer)
         {
-            var visual = new BulletVisual
-            {
-                Position = Motion.Position
-            };
-
-            visualizer.AddVisual(visual);
+            var visual = visualizer.AllocateVisual("bullet");
+            visual.InsertObject("position", new VisualPoint(Motion.Position.X, Motion.Position.Y));
         }
 
         public override void OnCollide(GameObject other)

@@ -1,15 +1,14 @@
-import { Text } from "@chakra-ui/react"
+import { AspectRatio, Text } from "@chakra-ui/react"
 import { useEffect, useRef, useState } from "react"
 import { GameScene } from "../models/GameScene";
 import { renderScene } from "../services/GameVisualizer";
 
 interface Props {
-
+    scene: GameScene
 }
 
-export const GameField = () => {
+export const GameField = ({scene}: Props) => {
     const ref = useRef<HTMLCanvasElement>(null);
-    const [scene, setScene] = useState<GameScene>(new GameScene());
 
     useEffect(() => {
         const render = () => {
@@ -26,7 +25,7 @@ export const GameField = () => {
 
             context.clearRect(0, 0, canvas.width, canvas.height);
 
-            renderScene(context, scene!);
+            renderScene(context, scene!, {x:canvas.width, y:canvas.height});
             requestAnimationFrame(render);
         }
 
@@ -39,7 +38,9 @@ export const GameField = () => {
 
             <Text as="b">Game</Text>
 
-            <canvas ref={ref} width={800} height={600} />
+            <AspectRatio>
+                <canvas ref={ref} width={800} height={600} />
+            </AspectRatio>
         </div>
     )
 }
